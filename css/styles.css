@@ -1279,6 +1279,20 @@ body.dark-mode .draggable-word {
     color: var(--text);
 }
 
+body.dark-mode .nav-btn {
+    background: #2a2a4e;
+    color: #eaeaea;
+}
+
+body.dark-mode .nav-btn:hover {
+    background: #3a3a5e;
+}
+
+body.dark-mode .flip-btn {
+    background: var(--secondary);
+    color: #1a1a2e;
+}
+
 /* Header Buttons */
 .header-buttons {
     display: flex;
