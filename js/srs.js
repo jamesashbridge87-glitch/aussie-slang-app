@@ -132,12 +132,14 @@ const SRSMode = {
 
         this.showScreen('review-card');
         this.showNextCard();
+        SoundEffects.play('start');
     },
 
     showNextCard() {
         if (this.reviewQueue.length === 0) {
             this.showScreen('review-complete');
             this.updateStats();
+            SoundEffects.play('success');
             return;
         }
 
@@ -161,6 +163,7 @@ const SRSMode = {
         const card = document.getElementById('review-flashcard');
         card.classList.toggle('flipped');
         this.isFlipped = !this.isFlipped;
+        SoundEffects.play('flip');
 
         if (this.isFlipped) {
             document.getElementById('flip-review').classList.add('hidden');
@@ -201,6 +204,7 @@ const SRSMode = {
 
         this.saveProgress();
         this.showNextCard();
+        SoundEffects.play('rating');
     },
 
     resetProgress() {

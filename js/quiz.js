@@ -62,6 +62,7 @@ const QuizMode = {
 
         this.showScreen('quiz-question');
         this.displayQuestion();
+        SoundEffects.play('start');
     },
 
     displayQuestion() {
@@ -134,11 +135,13 @@ const QuizMode = {
             button.classList.add('correct');
             feedback.className = 'feedback correct';
             feedbackText.textContent = "Correct! Good on ya!";
+            SoundEffects.play('correct');
         } else {
             button.classList.add('incorrect');
             feedback.className = 'feedback incorrect';
             const correctAnswer = this.questions[this.currentQuestion];
             feedbackText.textContent = `Wrong! The answer was: ${correctAnswer.meaning}`;
+            SoundEffects.play('incorrect');
         }
 
         feedback.classList.remove('hidden');
@@ -152,6 +155,7 @@ const QuizMode = {
 
     nextQuestion() {
         this.currentQuestion++;
+        SoundEffects.play('click');
 
         if (this.currentQuestion >= this.questions.length) {
             this.showResults();
@@ -162,6 +166,7 @@ const QuizMode = {
 
     showResults() {
         this.showScreen('quiz-results');
+        SoundEffects.play('success');
 
         document.getElementById('final-score').textContent = this.score;
         document.getElementById('final-total').textContent = this.questions.length;

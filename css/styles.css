@@ -45,12 +45,48 @@ body {
     text-align: center;
     padding: 20px 0;
     margin-bottom: 20px;
+    position: relative;
 }
 
 .header h1 {
     color: var(--primary);
     font-size: 2rem;
     margin-bottom: 20px;
+}
+
+/* Sound Toggle */
+.sound-toggle {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    background: var(--card-bg);
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sound-toggle:hover {
+    border-color: var(--primary);
+    background: #f0f8f4;
+}
+
+.sound-toggle .sound-off {
+    display: none;
+}
+
+.sound-toggle.muted .sound-on {
+    display: none;
+}
+
+.sound-toggle.muted .sound-off {
+    display: inline;
 }
 
 /* Mode Selector */

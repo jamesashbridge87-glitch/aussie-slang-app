@@ -4,6 +4,7 @@ const App = {
 
     init() {
         this.setupModeSelector();
+        this.setupSoundToggle();
         this.initializeModules();
     },
 
@@ -14,7 +15,25 @@ const App = {
             btn.addEventListener('click', (e) => {
                 const mode = e.target.dataset.mode;
                 this.switchMode(mode);
+                SoundEffects.play('click');
             });
+        });
+    },
+
+    setupSoundToggle() {
+        const toggle = document.getElementById('sound-toggle');
+
+        // Set initial state from saved preference
+        if (!SoundEffects.enabled) {
+            toggle.classList.add('muted');
+        }
+
+        toggle.addEventListener('click', () => {
+            const enabled = SoundEffects.toggle();
+            toggle.classList.toggle('muted', !enabled);
+            if (enabled) {
+                SoundEffects.play('click');
+            }
         });
     },
 

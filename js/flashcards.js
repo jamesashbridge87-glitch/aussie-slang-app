@@ -62,6 +62,7 @@ const FlashcardMode = {
         const card = document.getElementById('flashcard');
         card.classList.toggle('flipped');
         this.isFlipped = !this.isFlipped;
+        SoundEffects.play('flip');
 
         const flipBtn = document.getElementById('flip-card');
         flipBtn.textContent = this.isFlipped ? 'Show Term' : 'Flip Card';
@@ -79,6 +80,7 @@ const FlashcardMode = {
 
         this.currentIndex = (this.currentIndex + 1) % this.filteredCards.length;
         this.updateCard();
+        SoundEffects.play('navigate');
     },
 
     prevCard() {
@@ -93,6 +95,7 @@ const FlashcardMode = {
 
         this.currentIndex = (this.currentIndex - 1 + this.filteredCards.length) % this.filteredCards.length;
         this.updateCard();
+        SoundEffects.play('navigate');
     },
 
     updateCard() {
