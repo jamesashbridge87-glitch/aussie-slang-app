@@ -7,6 +7,12 @@ const QuizMode = {
     direction: 'term-to-meaning',
     answered: false,
 
+    // Timed mode properties
+    timedMode: false,
+    timePerQuestion: 15, // seconds per question
+    timeRemaining: 0,
+    timerInterval: null,
+
     init() {
         this.setupEventListeners();
         this.populateCategoryFilter();
@@ -25,6 +31,15 @@ const QuizMode = {
         document.getElementById('quiz-direction').addEventListener('change', (e) => {
             this.direction = e.target.value;
         });
+
+        // Timed mode toggle
+        const timedToggle = document.getElementById('timed-mode');
+        if (timedToggle) {
+            timedToggle.addEventListener('change', (e) => {
+                this.timedMode = e.target.checked;
+                SoundEffects.play('click');
+            });
+        }
     },
 
     populateCategoryFilter() {
@@ -52,13 +67,19 @@ const QuizMode = {
         this.questions = this.shuffleArray(availableCards).slice(0, this.totalQuestions);
 
         if (this.questions.length < 4) {
-            alert('Not enough terms in this category for a quiz. Please select a different category.');
+            Gamification.showNotification('Not enough terms in this category. Select another.');
             return;
         }
 
         // Update totals
         document.getElementById('quiz-total').textContent = this.questions.length;
         document.getElementById('quiz-score').textContent = '0';
+
+        // Show/hide timer based on timed mode
+        const timerContainer = document.getElementById('quiz-timer-container');
+        if (timerContainer) {
+            timerContainer.classList.toggle('hidden', !this.timedMode);
+        }
 
         this.showScreen('quiz-question');
         this.displayQuestion();
@@ -99,6 +120,95 @@ const QuizMode = {
         // Hide feedback
         document.getElementById('quiz-feedback').classList.add('hidden');
         this.answered = false;
+
+        // Start timer if timed mode
+        if (this.timedMode) {
+            this.startTimer();
+        }
+    },
+
+    startTimer() {
+        // Clear any existing timer
+        this.stopTimer();
+
+        this.timeRemaining = this.timePerQuestion;
+        this.updateTimerDisplay();
+
+        const timerBar = document.getElementById('timer-bar');
+        if (timerBar) {
+            timerBar.style.width = '100%';
+            timerBar.classList.remove('warning', 'danger');
+        }
+
+        this.timerInterval = setInterval(() => {
+            this.timeRemaining--;
+            this.updateTimerDisplay();
+
+            // Update timer bar
+            if (timerBar) {
+                const percentage = (this.timeRemaining / this.timePerQuestion) * 100;
+                timerBar.style.width = `${percentage}%`;
+
+                // Add warning colors
+                if (this.timeRemaining <= 3) {
+                    timerBar.classList.add('danger');
+                    timerBar.classList.remove('warning');
+                } else if (this.timeRemaining <= 5) {
+                    timerBar.classList.add('warning');
+                }
+            }
+
+            // Time's up!
+            if (this.timeRemaining <= 0) {
+                this.timeUp();
+            }
+        }, 1000);
+    },
+
+    stopTimer() {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
+    },
+
+    updateTimerDisplay() {
+        const timerText = document.getElementById('timer-text');
+        if (timerText) {
+            timerText.textContent = this.timeRemaining;
+        }
+    },
+
+    timeUp() {
+        this.stopTimer();
+
+        if (this.answered) return;
+        this.answered = true;
+
+        SoundEffects.play('incorrect');
+
+        const feedback = document.getElementById('quiz-feedback');
+        const feedbackText = document.getElementById('feedback-text');
+
+        // Mark all buttons
+        const buttons = document.querySelectorAll('.answer-btn');
+        buttons.forEach(btn => {
+            btn.classList.add('disabled');
+            if (btn.dataset.correct === 'true') {
+                btn.classList.add('correct');
+            }
+        });
+
+        feedback.className = 'feedback incorrect';
+        const correctAnswer = this.questions[this.currentQuestion];
+        feedbackText.textContent = `Time's up! The answer was: ${this.direction === 'term-to-meaning' ? correctAnswer.meaning : correctAnswer.term}`;
+        feedback.classList.remove('hidden');
+
+        // Update next button text
+        const nextBtn = document.getElementById('next-question');
+        nextBtn.textContent = this.currentQuestion < this.questions.length - 1
+            ? 'Next Question'
+            : 'See Results';
     },
 
     generateOptions(correctAnswer) {
@@ -115,6 +225,9 @@ const QuizMode = {
     selectAnswer(button) {
         if (this.answered) return;
         this.answered = true;
+
+        // Stop timer if running
+        this.stopTimer();
 
         const isCorrect = button.dataset.correct === 'true';
         const feedback = document.getElementById('quiz-feedback');
@@ -134,13 +247,23 @@ const QuizMode = {
             document.getElementById('quiz-score').textContent = this.score;
             button.classList.add('correct');
             feedback.className = 'feedback correct';
-            feedbackText.textContent = "Correct! Good on ya!";
+
+            // Bonus message for fast answers in timed mode
+            if (this.timedMode && this.timeRemaining >= 10) {
+                feedbackText.textContent = "Lightning fast! Correct!";
+            } else {
+                feedbackText.textContent = "Correct! Good on ya!";
+            }
+
             SoundEffects.play('correct');
+
+            // Record correct answer for XP
+            Gamification.recordQuizCorrect();
         } else {
             button.classList.add('incorrect');
             feedback.className = 'feedback incorrect';
             const correctAnswer = this.questions[this.currentQuestion];
-            feedbackText.textContent = `Wrong! The answer was: ${correctAnswer.meaning}`;
+            feedbackText.textContent = `Wrong! The answer was: ${this.direction === 'term-to-meaning' ? correctAnswer.meaning : correctAnswer.term}`;
             SoundEffects.play('incorrect');
         }
 
@@ -165,6 +288,7 @@ const QuizMode = {
     },
 
     showResults() {
+        this.stopTimer();
         this.showScreen('quiz-results');
         SoundEffects.play('success');
 
@@ -186,9 +310,17 @@ const QuizMode = {
         } else {
             message.textContent = "No worries, mate. Practice makes perfect!";
         }
+
+        // Record quiz completion for gamification
+        Gamification.recordQuizComplete(this.score, this.questions.length);
     },
 
     showScreen(screenId) {
+        // Stop timer when changing screens
+        if (screenId !== 'quiz-question') {
+            this.stopTimer();
+        }
+
         ['quiz-start', 'quiz-question', 'quiz-results'].forEach(id => {
             document.getElementById(id).classList.add('hidden');
         });

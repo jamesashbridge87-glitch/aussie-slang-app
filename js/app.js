@@ -58,10 +58,20 @@ const App = {
     },
 
     initializeModules() {
+        // Initialize dark mode first (affects whole UI)
+        DarkMode.init();
+
+        // Initialize gamification (other modules depend on it)
+        Gamification.init();
+
         // Initialize all modes
         FlashcardMode.init();
         QuizMode.init();
+        FillBlankMode.init();
+        SentenceBuilder.init();
         SRSMode.init();
+        Speech.init();
+        VoicePractice.init();
     }
 };
 

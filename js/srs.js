@@ -140,6 +140,8 @@ const SRSMode = {
             this.showScreen('review-complete');
             this.updateStats();
             SoundEffects.play('success');
+            // Record review session completion for gamification
+            Gamification.recordReviewComplete();
             return;
         }
 

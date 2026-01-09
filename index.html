@@ -9,15 +9,34 @@
 <body>
     <div class="app-container">
         <header class="header">
-            <h1>Aussie Slang Learner</h1>
-            <button class="sound-toggle" id="sound-toggle" title="Toggle Sound">
-                <span class="sound-on">🔊</span>
-                <span class="sound-off hidden">🔇</span>
-            </button>
+            <div class="header-top">
+                <h1>Aussie Slang Learner</h1>
+                <div class="header-stats">
+                    <span class="streak-badge" id="streak-badge" title="Daily Streak">🔥 <span id="streak-count">0</span></span>
+                    <span class="xp-badge" id="xp-badge" title="Experience Points">⭐ <span id="xp-count">0</span> XP</span>
+                    <span class="level-badge" id="level-badge" title="Current Level">Lvl <span id="level-count">1</span></span>
+                </div>
+                <div class="header-buttons">
+                    <button class="icon-toggle" id="dark-mode-toggle" title="Toggle Dark Mode">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                    <button class="icon-toggle" id="sound-toggle" title="Toggle Sound">
+                        <span class="sound-on">🔊</span>
+                        <span class="sound-off hidden">🔇</span>
+                    </button>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search slang terms..." class="search-input">
+                <button class="search-clear hidden" id="search-clear">✕</button>
+            </div>
             <nav class="mode-selector">
                 <button class="mode-btn active" data-mode="flashcards">Flashcards</button>
                 <button class="mode-btn" data-mode="quiz">Quiz</button>
+                <button class="mode-btn" data-mode="fillblank">Fill Blank</button>
+                <button class="mode-btn" data-mode="builder">Builder</button>
                 <button class="mode-btn" data-mode="review">Review</button>
+                <button class="mode-btn" data-mode="achievements">Badges</button>
             </nav>
         </header>
 
@@ -28,19 +47,54 @@
                     <select id="flashcard-category" class="category-select">
                         <option value="all">All Categories</option>
                     </select>
+                    <select id="flashcard-difficulty" class="category-select">
+                        <option value="all">All Levels</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                    <div class="flashcard-controls">
+                        <button class="icon-btn" id="shuffle-cards" title="Shuffle Cards">🔀</button>
+                        <button class="icon-btn" id="favorite-card" title="Add to Favorites">☆</button>
+                    </div>
                     <span class="card-counter">Card <span id="current-card">1</span> of <span id="total-cards">0</span></span>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="flashcard-progress"></div>
                 </div>
 
                 <div class="flashcard-container">
                     <div class="flashcard" id="flashcard">
                         <div class="flashcard-inner">
                             <div class="flashcard-front">
+                                <span class="difficulty-badge" id="card-difficulty"></span>
                                 <span class="term" id="flashcard-term">Loading...</span>
+                                <button class="speak-btn" id="speak-term" title="Hear pronunciation">🔈</button>
                             </div>
                             <div class="flashcard-back">
                                 <span class="meaning" id="flashcard-meaning"></span>
                                 <span class="example" id="flashcard-example"></span>
+                                <button class="speak-btn" id="speak-example" title="Hear example">🔈</button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voice Practice Section -->
+                <div class="voice-practice-section">
+                    <div class="voice-practice-controls">
+                        <button class="practice-btn" id="practice-speaking" title="Practice Speaking">
+                            <span class="mic-icon">🎤</span>
+                            <span class="btn-text">Practice Speaking</span>
+                            <span class="recording-indicator" id="recording-indicator"></span>
+                        </button>
+                    </div>
+                    <div class="voice-practice-feedback hidden" id="voice-practice-feedback">
+                        <div class="voice-transcript" id="voice-transcript"></div>
+                        <div class="voice-result">
+                            <span class="voice-score" id="voice-score"></span>
+                            <span class="voice-feedback" id="voice-feedback"></span>
                         </div>
                     </div>
                 </div>
@@ -58,20 +112,41 @@
                     <select id="quiz-category" class="category-select">
                         <option value="all">All Categories</option>
                     </select>
+                    <select id="quiz-difficulty" class="category-select">
+                        <option value="all">All Levels</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
                     <select id="quiz-direction" class="category-select">
                         <option value="term-to-meaning">Slang → Meaning</option>
                         <option value="meaning-to-term">Meaning → Slang</option>
                     </select>
+                    <label class="timed-toggle">
+                        <input type="checkbox" id="timed-mode">
+                        <span>⏱️ Timed</span>
+                    </label>
                 </div>
 
                 <div class="quiz-container">
                     <div class="quiz-start" id="quiz-start">
                         <h2>Ready for a Quiz?</h2>
                         <p>Test your knowledge of Aussie slang!</p>
+                        <div class="high-score-display">
+                            <span>🏆 High Score: <span id="high-score">0</span></span>
+                        </div>
                         <button class="start-btn" id="start-quiz">Start Quiz</button>
                     </div>
 
                     <div class="quiz-question hidden" id="quiz-question">
+                        <div class="quiz-timer-container hidden" id="quiz-timer-container">
+                            <div class="timer-display">
+                                <span id="timer-text">15</span>s
+                            </div>
+                            <div class="timer-bar-container">
+                                <div class="timer-bar" id="timer-bar"></div>
+                            </div>
+                        </div>
                         <div class="quiz-progress">
                             <span>Question <span id="quiz-current">1</span> of <span id="quiz-total">10</span></span>
                             <span class="quiz-score">Score: <span id="quiz-score">0</span></span>
@@ -96,6 +171,106 @@
                         </div>
                         <p id="results-message">Good effort, mate!</p>
                         <button class="start-btn" id="restart-quiz">Try Again</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fill-in-the-Blank Mode -->
+            <section id="fillblank-mode" class="mode-section">
+                <div class="controls-bar">
+                    <select id="fillblank-difficulty" class="category-select">
+                        <option value="all">All Levels</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+
+                <div class="fillblank-container">
+                    <div class="fillblank-start" id="fillblank-start">
+                        <h2>Fill in the Blank</h2>
+                        <p>Complete the sentences with the correct Aussie slang!</p>
+                        <p class="mode-description">Type the missing word to complete each sentence.</p>
+                        <button class="start-btn" id="start-fillblank">Start Game</button>
+                    </div>
+
+                    <div class="fillblank-game hidden" id="fillblank-game">
+                        <div class="fillblank-progress">
+                            <span>Question <span id="fillblank-current">1</span> of <span id="fillblank-total">10</span></span>
+                            <span class="fillblank-score">Score: <span id="fillblank-score">0</span></span>
+                        </div>
+
+                        <div class="fillblank-card">
+                            <p class="fillblank-sentence" id="fillblank-sentence">Loading sentence...</p>
+                            <p class="fillblank-hint" id="fillblank-hint"></p>
+                            <div class="fillblank-input-container">
+                                <input type="text" id="fillblank-input" class="fillblank-input" placeholder="Type the slang word..." autocomplete="off">
+                                <button class="submit-btn" id="submit-fillblank">Check</button>
+                            </div>
+                        </div>
+
+                        <div class="fillblank-feedback hidden" id="fillblank-feedback">
+                            <p id="fillblank-feedback-text"></p>
+                            <button class="next-btn" id="next-fillblank">Next</button>
+                        </div>
+                    </div>
+
+                    <div class="fillblank-results hidden" id="fillblank-results">
+                        <h2>Game Complete!</h2>
+                        <div class="results-score">
+                            <span class="big-score" id="fillblank-final-score">0</span>
+                            <span class="score-label">out of <span id="fillblank-final-total">10</span></span>
+                        </div>
+                        <p id="fillblank-results-message">Good effort, mate!</p>
+                        <button class="start-btn" id="restart-fillblank">Play Again</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sentence Builder Mode -->
+            <section id="builder-mode" class="mode-section">
+                <div class="builder-container">
+                    <div class="builder-start" id="builder-start">
+                        <h2>Sentence Builder</h2>
+                        <p>Drag and drop the correct slang word to complete each sentence!</p>
+                        <p class="mode-description">Click a word, then click the blank to place it.</p>
+                        <button class="start-btn" id="start-builder">Start Game</button>
+                    </div>
+
+                    <div class="builder-game hidden" id="builder-game">
+                        <div class="builder-progress">
+                            <span>Sentence <span id="builder-current">1</span> of <span id="builder-total">10</span></span>
+                            <span class="builder-score">Score: <span id="builder-score">0</span></span>
+                        </div>
+
+                        <div class="sentence-card">
+                            <p class="sentence-display" id="sentence-display">Loading...</p>
+                        </div>
+
+                        <div class="word-bank" id="word-bank">
+                            <!-- Words populated by JS -->
+                        </div>
+
+                        <div class="builder-controls">
+                            <button class="hint-btn" id="hint-btn">💡 Hint</button>
+                            <button class="skip-btn" id="skip-sentence">Skip →</button>
+                        </div>
+
+                        <p class="hint-text hidden" id="hint-text"></p>
+
+                        <div class="builder-feedback hidden" id="builder-feedback">
+                            <p id="builder-feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="builder-results hidden" id="builder-results">
+                        <h2>Game Complete!</h2>
+                        <div class="results-score">
+                            <span class="big-score" id="builder-final-score">0</span>
+                            <span class="score-label">out of <span id="builder-final-total">10</span></span>
+                        </div>
+                        <p id="builder-results-message">Good effort, mate!</p>
+                        <button class="start-btn" id="restart-builder">Play Again</button>
                     </div>
                 </div>
             </section>
@@ -131,10 +306,12 @@
                             <div class="flashcard-inner">
                                 <div class="flashcard-front">
                                     <span class="term" id="review-term">Loading...</span>
+                                    <button class="speak-btn" id="speak-review-term" title="Hear pronunciation">🔈</button>
                                 </div>
                                 <div class="flashcard-back">
                                     <span class="meaning" id="review-meaning"></span>
                                     <span class="example" id="review-example"></span>
+                                    <button class="speak-btn" id="speak-review-example" title="Hear example">🔈</button>
                                 </div>
                             </div>
                         </div>
@@ -158,6 +335,41 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Achievements Mode -->
+            <section id="achievements-mode" class="mode-section">
+                <div class="achievements-container">
+                    <h2>Your Achievements</h2>
+
+                    <div class="daily-challenge" id="daily-challenge">
+                        <h3>📅 Daily Challenge</h3>
+                        <div class="challenge-card" id="challenge-card">
+                            <p class="challenge-term" id="challenge-term">Loading...</p>
+                            <p class="challenge-hint">Learn this term today!</p>
+                            <button class="start-btn" id="learn-challenge">Learn Now</button>
+                        </div>
+                    </div>
+
+                    <div class="level-progress">
+                        <h3>Level Progress</h3>
+                        <div class="level-bar-container">
+                            <div class="level-bar" id="level-progress-bar"></div>
+                        </div>
+                        <p class="level-info"><span id="xp-current">0</span> / <span id="xp-needed">100</span> XP to Level <span id="next-level">2</span></p>
+                    </div>
+
+                    <div class="badges-grid" id="badges-grid">
+                        <!-- Badges populated by JS -->
+                    </div>
+
+                    <div class="favorites-section">
+                        <h3>⭐ Favorite Terms (<span id="favorites-count">0</span>)</h3>
+                        <div class="favorites-list" id="favorites-list">
+                            <p class="no-favorites">No favorites yet. Click ☆ on a flashcard to add!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
 
         <footer class="footer">
@@ -167,8 +379,14 @@
 
     <script src="js/data.js"></script>
     <script src="js/sounds.js"></script>
+    <script src="js/speech.js"></script>
+    <script src="js/voicePractice.js"></script>
+    <script src="js/darkMode.js"></script>
+    <script src="js/gamification.js"></script>
     <script src="js/flashcards.js"></script>
     <script src="js/quiz.js"></script>
+    <script src="js/fillBlank.js"></script>
+    <script src="js/sentenceBuilder.js"></script>
     <script src="js/srs.js"></script>
     <script src="js/app.js"></script>
 </body>
