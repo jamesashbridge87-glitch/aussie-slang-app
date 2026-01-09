@@ -7,7 +7,23 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="app-container">
+    <!-- Login Screen -->
+    <div class="auth-screen" id="auth-screen">
+        <div class="auth-container">
+            <div class="auth-logo">🦘</div>
+            <h1>Aussie Slang Learner</h1>
+            <p class="auth-subtitle">Enter your access code to continue</p>
+            <form id="auth-form" class="auth-form">
+                <input type="password" id="auth-password" class="auth-input" placeholder="Access Code" autocomplete="off">
+                <button type="submit" class="auth-btn">Enter</button>
+            </form>
+            <p class="auth-error hidden" id="auth-error">Invalid access code</p>
+            <p class="auth-hint">Access code provided with your course enrollment</p>
+        </div>
+    </div>
+
+    <!-- Main App (hidden until authenticated) -->
+    <div class="app-container hidden" id="app-container">
         <header class="header">
             <div class="header-top">
                 <h1>Aussie Slang Learner</h1>
@@ -23,6 +39,9 @@
                     <button class="icon-toggle" id="sound-toggle" title="Toggle Sound">
                         <span class="sound-on">🔊</span>
                         <span class="sound-off hidden">🔇</span>
+                    </button>
+                    <button class="icon-toggle logout-btn" id="logout-btn" title="Logout">
+                        <span>🚪</span>
                     </button>
                 </div>
             </div>
@@ -377,6 +396,7 @@
         </footer>
     </div>
 
+    <script src="js/auth.js"></script>
     <script src="js/data.js"></script>
     <script src="js/sounds.js"></script>
     <script src="js/speech.js"></script>
