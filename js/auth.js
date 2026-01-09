@@ -2,7 +2,7 @@
 const Auth = {
     // Change this hash to set your password
     // To generate a new hash, run in browser console: Auth.generateHash('your-password')
-    PASSWORD_HASH: '5e884898da28047d9164141e30dc0c0f5e884898da28047d9164141e30dc0c0f', // Default: "password"
+    PASSWORD_HASH: 'b989b1829d070ffbbb1c5baef05728cee71bc06a8fbb0be07ec0da4e73df9466', // Password: "aussie101"
 
     STORAGE_KEY: 'aussie_slang_auth',
     SESSION_DURATION: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
