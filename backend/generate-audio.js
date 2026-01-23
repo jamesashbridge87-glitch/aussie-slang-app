@@ -33,18 +33,35 @@ if (!slangDataMatch) {
     process.exit(1);
 }
 
-// Parse the slang data
+// Parse the slang data including emotion tags
 function parseSlangData(content) {
     const items = [];
-    const regex = /\{\s*id:\s*"([^"]+)",\s*term:\s*"([^"]+)",\s*meaning:\s*"([^"]+)",\s*example:\s*"([^"]+)"/g;
+    // Updated regex to capture emotion tags
+    const regex = /\{\s*id:\s*"([^"]+)",\s*term:\s*"([^"]+)",\s*meaning:\s*"[^"]+",\s*example:\s*"([^"]+)"[^}]*termEmotion:\s*"([^"]*)"[^}]*exampleEmotion:\s*"([^"]*)"/g;
     let match;
 
     while ((match = regex.exec(content)) !== null) {
         items.push({
             id: match[1],
             term: match[2],
-            example: match[4]
+            example: match[3],
+            termEmotion: match[4] || '',
+            exampleEmotion: match[5] || ''
         });
+    }
+
+    // Fallback for entries without emotion tags
+    if (items.length === 0) {
+        const fallbackRegex = /\{\s*id:\s*"([^"]+)",\s*term:\s*"([^"]+)",\s*meaning:\s*"[^"]+",\s*example:\s*"([^"]+)"/g;
+        while ((match = fallbackRegex.exec(content)) !== null) {
+            items.push({
+                id: match[1],
+                term: match[2],
+                example: match[3],
+                termEmotion: '',
+                exampleEmotion: ''
+            });
+        }
     }
 
     return items;
@@ -60,7 +77,7 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 }
 
 // Generate audio using Fish.audio API
-async function generateAudio(text, filename) {
+async function generateAudio(text, filename, emotion = '') {
     const filepath = path.join(OUTPUT_DIR, filename);
 
     // Skip if file already exists
@@ -68,6 +85,9 @@ async function generateAudio(text, filename) {
         console.log(`  Skipping (exists): ${filename}`);
         return { skipped: true };
     }
+
+    // Prepend emotion tags to text (Fish.audio format)
+    const textWithEmotion = emotion ? `${emotion} ${text}` : text;
 
     try {
         const response = await fetch('https://api.fish.audio/v1/tts', {
@@ -78,7 +98,7 @@ async function generateAudio(text, filename) {
                 'model': 's1'
             },
             body: JSON.stringify({
-                text: text,
+                text: textWithEmotion,
                 reference_id: FISH_VOICE_ID,
                 format: 'mp3',
                 mp3_bitrate: 128,
@@ -136,9 +156,9 @@ async function generateAllAudio() {
 
         console.log(`${progress} Processing: ${item.term}`);
 
-        // Generate term audio
+        // Generate term audio with emotion
         const termFilename = `${item.id}-term.mp3`;
-        const termResult = await generateAudio(item.term, termFilename);
+        const termResult = await generateAudio(item.term, termFilename, item.termEmotion);
 
         if (termResult.skipped) stats.skipped++;
         else if (termResult.success) {
@@ -149,9 +169,9 @@ async function generateAllAudio() {
 
         await sleep(DELAY_BETWEEN_REQUESTS);
 
-        // Generate example audio
+        // Generate example audio with emotion
         const exampleFilename = `${item.id}-example.mp3`;
-        const exampleResult = await generateAudio(item.example, exampleFilename);
+        const exampleResult = await generateAudio(item.example, exampleFilename, item.exampleEmotion);
 
         if (exampleResult.skipped) stats.skipped++;
         else if (exampleResult.success) {
