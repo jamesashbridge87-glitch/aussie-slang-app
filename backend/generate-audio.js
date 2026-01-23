@@ -86,8 +86,10 @@ async function generateAudio(text, filename) {
         return { skipped: true };
     }
 
-    // Ensure text ends with punctuation to prevent audio cutoff
+    // Process text to prevent cutoff and repetition issues
     let processedText = text.trim();
+
+    // Add trailing punctuation if missing (helps prevent cutoff)
     if (!/[.!?]$/.test(processedText)) {
         processedText += '.';
     }
@@ -106,7 +108,8 @@ async function generateAudio(text, filename) {
                 format: 'mp3',
                 mp3_bitrate: 128,
                 normalize: true,
-                latency: 'normal'
+                latency: 'normal',
+                chunk_length: 100  // Minimum chunk size to prevent repetition of short phrases
             })
         });
 
