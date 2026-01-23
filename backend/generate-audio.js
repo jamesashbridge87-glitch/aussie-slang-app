@@ -33,33 +33,28 @@ if (!slangDataMatch) {
     process.exit(1);
 }
 
-// Parse the slang data including emotion tags
+// Parse the slang data including emotion tags and pronunciation hints
 function parseSlangData(content) {
     const items = [];
-    // Updated regex to capture emotion tags
-    const regex = /\{\s*id:\s*"([^"]+)",\s*term:\s*"([^"]+)",\s*meaning:\s*"[^"]+",\s*example:\s*"([^"]+)"[^}]*termEmotion:\s*"([^"]*)"[^}]*exampleEmotion:\s*"([^"]*)"/g;
+    // Match each object in the slangData array
+    const objectRegex = /\{\s*id:\s*"([^"]+)"[^}]+\}/g;
     let match;
 
-    while ((match = regex.exec(content)) !== null) {
-        items.push({
-            id: match[1],
-            term: match[2],
-            example: match[3],
-            termEmotion: match[4] || '',
-            exampleEmotion: match[5] || ''
-        });
-    }
+    while ((match = objectRegex.exec(content)) !== null) {
+        const obj = match[0];
 
-    // Fallback for entries without emotion tags
-    if (items.length === 0) {
-        const fallbackRegex = /\{\s*id:\s*"([^"]+)",\s*term:\s*"([^"]+)",\s*meaning:\s*"[^"]+",\s*example:\s*"([^"]+)"/g;
-        while ((match = fallbackRegex.exec(content)) !== null) {
+        // Extract fields from the object
+        const id = obj.match(/id:\s*"([^"]+)"/)?.[1] || '';
+        const term = obj.match(/term:\s*"([^"]+)"/)?.[1] || '';
+        const example = obj.match(/example:\s*"([^"]+)"/)?.[1] || '';
+        const termPronunciation = obj.match(/termPronunciation:\s*"([^"]+)"/)?.[1] || '';
+
+        if (id && term) {
             items.push({
-                id: match[1],
-                term: match[2],
-                example: match[3],
-                termEmotion: '',
-                exampleEmotion: ''
+                id,
+                term,
+                example,
+                termPronunciation
             });
         }
     }
@@ -162,9 +157,10 @@ async function generateAllAudio() {
 
         console.log(`${progress} Processing: ${item.term}`);
 
-        // Generate term audio
+        // Generate term audio (use pronunciation hint if available)
         const termFilename = `${item.id}-term.mp3`;
-        const termResult = await generateAudio(item.term, termFilename);
+        const termText = item.termPronunciation || item.term;
+        const termResult = await generateAudio(termText, termFilename);
 
         if (termResult.skipped) stats.skipped++;
         else if (termResult.success) {
