@@ -1,32 +1,44 @@
-// Text-to-Speech Module with Australian Accent
+// Text-to-Speech Module using Fish.audio via Backend API
 const Speech = {
-    synth: window.speechSynthesis,
-    aussieVoice: null,
+    // Configure this URL to your Railway deployment
+    // Example: 'https://your-app.railway.app'
+    API_BASE_URL: localStorage.getItem('aussie_slang_tts_url') || '',
+
     speaking: false,
+    currentAudio: null,
 
     init() {
-        // Wait for voices to load
-        if (this.synth.onvoiceschanged !== undefined) {
-            this.synth.onvoiceschanged = () => this.findAussieVoice();
-        }
-        // Try immediately as well (some browsers load voices synchronously)
-        this.findAussieVoice();
         this.setupEventListeners();
+        this.setupConfigModal();
     },
 
-    findAussieVoice() {
-        const voices = this.synth.getVoices();
+    setupConfigModal() {
+        // Create config button in header if it doesn't exist
+        const header = document.querySelector('.header-stats');
+        if (header && !document.getElementById('tts-config-btn')) {
+            const configBtn = document.createElement('button');
+            configBtn.id = 'tts-config-btn';
+            configBtn.className = 'icon-btn';
+            configBtn.title = 'Configure TTS Server';
+            configBtn.innerHTML = '&#9881;'; // Gear icon
+            configBtn.style.cssText = 'font-size: 1.2rem; margin-left: 10px;';
+            configBtn.addEventListener('click', () => this.showConfigPrompt());
+            header.appendChild(configBtn);
+        }
+    },
 
-        // Try to find Australian English voice
-        this.aussieVoice = voices.find(voice =>
-            voice.lang === 'en-AU'
+    showConfigPrompt() {
+        const currentUrl = this.API_BASE_URL || '(not configured)';
+        const newUrl = prompt(
+            `Enter your TTS backend URL:\n\nCurrent: ${currentUrl}\n\nExample: https://your-app.railway.app`,
+            this.API_BASE_URL
         );
 
-        // Fallback to any English voice if no Australian available
-        if (!this.aussieVoice) {
-            this.aussieVoice = voices.find(voice =>
-                voice.lang.startsWith('en-')
-            );
+        if (newUrl !== null) {
+            // Remove trailing slash if present
+            this.API_BASE_URL = newUrl.replace(/\/$/, '');
+            localStorage.setItem('aussie_slang_tts_url', this.API_BASE_URL);
+            alert(this.API_BASE_URL ? 'TTS server URL saved!' : 'TTS server URL cleared. Using browser speech.');
         }
     },
 
@@ -59,43 +71,122 @@ const Speech = {
         });
     },
 
-    speak(text, button = null) {
-        // Cancel any ongoing speech
-        this.synth.cancel();
+    async speak(text, button = null) {
+        // Stop any ongoing speech
+        this.stop();
 
         if (!text || text === 'Loading...') return;
-
-        const utterance = new SpeechSynthesisUtterance(text);
-
-        // Set Australian voice if available
-        if (this.aussieVoice) {
-            utterance.voice = this.aussieVoice;
-        }
-
-        // Adjust speech settings for natural sound
-        utterance.rate = 0.9;  // Slightly slower
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
 
         // Add speaking animation to button
         if (button) {
             button.classList.add('speaking');
-            utterance.onend = () => {
-                button.classList.remove('speaking');
-                this.speaking = false;
-            };
-            utterance.onerror = () => {
-                button.classList.remove('speaking');
-                this.speaking = false;
-            };
         }
 
         this.speaking = true;
-        this.synth.speak(utterance);
+
+        // Use Fish.audio backend if configured, otherwise fall back to browser TTS
+        if (this.API_BASE_URL) {
+            await this.speakWithFishAudio(text, button);
+        } else {
+            this.speakWithBrowser(text, button);
+        }
+    },
+
+    async speakWithFishAudio(text, button) {
+        try {
+            const response = await fetch(`${this.API_BASE_URL}/api/tts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text })
+            });
+
+            if (!response.ok) {
+                throw new Error(`TTS request failed: ${response.status}`);
+            }
+
+            // Get audio blob
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+
+            // Play audio
+            this.currentAudio = new Audio(audioUrl);
+
+            this.currentAudio.onended = () => {
+                this.cleanupAudio(button, audioUrl);
+            };
+
+            this.currentAudio.onerror = (e) => {
+                console.error('Audio playback error:', e);
+                this.cleanupAudio(button, audioUrl);
+            };
+
+            await this.currentAudio.play();
+
+        } catch (error) {
+            console.error('Fish.audio TTS error:', error);
+            this.cleanupAudio(button);
+
+            // Fall back to browser TTS on error
+            console.log('Falling back to browser TTS...');
+            this.speakWithBrowser(text, button);
+        }
+    },
+
+    speakWithBrowser(text, button) {
+        // Fallback to Web Speech API
+        const synth = window.speechSynthesis;
+        synth.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        // Try to find Australian English voice
+        const voices = synth.getVoices();
+        const aussieVoice = voices.find(v => v.lang === 'en-AU') ||
+                          voices.find(v => v.lang.startsWith('en-'));
+
+        if (aussieVoice) {
+            utterance.voice = aussieVoice;
+        }
+
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        utterance.onend = () => {
+            if (button) button.classList.remove('speaking');
+            this.speaking = false;
+        };
+
+        utterance.onerror = () => {
+            if (button) button.classList.remove('speaking');
+            this.speaking = false;
+        };
+
+        synth.speak(utterance);
+    },
+
+    cleanupAudio(button, audioUrl = null) {
+        if (button) button.classList.remove('speaking');
+        this.speaking = false;
+        this.currentAudio = null;
+        if (audioUrl) {
+            URL.revokeObjectURL(audioUrl);
+        }
     },
 
     stop() {
-        this.synth.cancel();
+        // Stop Fish.audio playback
+        if (this.currentAudio) {
+            this.currentAudio.pause();
+            this.currentAudio.currentTime = 0;
+            this.currentAudio = null;
+        }
+
+        // Stop browser TTS
+        window.speechSynthesis.cancel();
+
         this.speaking = false;
         document.querySelectorAll('.speak-btn').forEach(btn => {
             btn.classList.remove('speaking');
