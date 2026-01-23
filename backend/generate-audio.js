@@ -77,7 +77,7 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 }
 
 // Generate audio using Fish.audio API
-async function generateAudio(text, filename, emotion = '') {
+async function generateAudio(text, filename) {
     const filepath = path.join(OUTPUT_DIR, filename);
 
     // Skip if file already exists
@@ -86,8 +86,11 @@ async function generateAudio(text, filename, emotion = '') {
         return { skipped: true };
     }
 
-    // Prepend emotion tags to text (Fish.audio format)
-    const textWithEmotion = emotion ? `${emotion} ${text}` : text;
+    // Ensure text ends with punctuation to prevent audio cutoff
+    let processedText = text.trim();
+    if (!/[.!?]$/.test(processedText)) {
+        processedText += '.';
+    }
 
     try {
         const response = await fetch('https://api.fish.audio/v1/tts', {
@@ -98,12 +101,12 @@ async function generateAudio(text, filename, emotion = '') {
                 'model': 's1'
             },
             body: JSON.stringify({
-                text: textWithEmotion,
+                text: processedText,
                 reference_id: FISH_VOICE_ID,
                 format: 'mp3',
                 mp3_bitrate: 128,
                 normalize: true,
-                latency: 'balanced'
+                latency: 'normal'
             })
         });
 
@@ -156,9 +159,9 @@ async function generateAllAudio() {
 
         console.log(`${progress} Processing: ${item.term}`);
 
-        // Generate term audio with emotion
+        // Generate term audio
         const termFilename = `${item.id}-term.mp3`;
-        const termResult = await generateAudio(item.term, termFilename, item.termEmotion);
+        const termResult = await generateAudio(item.term, termFilename);
 
         if (termResult.skipped) stats.skipped++;
         else if (termResult.success) {
@@ -169,9 +172,9 @@ async function generateAllAudio() {
 
         await sleep(DELAY_BETWEEN_REQUESTS);
 
-        // Generate example audio with emotion
+        // Generate example audio
         const exampleFilename = `${item.id}-example.mp3`;
-        const exampleResult = await generateAudio(item.example, exampleFilename, item.exampleEmotion);
+        const exampleResult = await generateAudio(item.example, exampleFilename);
 
         if (exampleResult.skipped) stats.skipped++;
         else if (exampleResult.success) {
