@@ -305,14 +305,27 @@ const VoicePractice = {
 
     showFeedback(message, type) {
         const feedbackEl = document.getElementById('voice-feedback');
+        const scoreEl = document.getElementById('voice-score');
+        const transcriptEl = document.getElementById('voice-transcript');
+
+        if (transcriptEl) {
+            transcriptEl.textContent = '';
+        }
+
         if (feedbackEl) {
             feedbackEl.textContent = message;
             feedbackEl.className = `voice-feedback ${type}`;
         }
 
+        if (scoreEl) {
+            scoreEl.textContent = type === 'error' ? '⚠️' : '';
+            scoreEl.className = type === 'error' ? 'voice-score' : '';
+        }
+
         const container = document.getElementById('voice-practice-feedback');
         if (container) {
-            if (type === 'listening') {
+            // Show container for both listening and error states
+            if (type === 'listening' || type === 'error') {
                 container.classList.remove('hidden');
             }
         }
