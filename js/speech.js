@@ -1,81 +1,83 @@
-// Text-to-Speech Module using Fish.audio via Backend API
+// Text-to-Speech Module using Pre-recorded Audio Files
 const Speech = {
-    // Configure this URL to your Railway deployment
-    // Example: 'https://your-app.railway.app'
-    API_BASE_URL: localStorage.getItem('aussie_slang_tts_url') || '',
-
     speaking: false,
     currentAudio: null,
 
+    // Base path for audio files
+    audioBasePath: 'audio/',
+
     init() {
         this.setupEventListeners();
-        this.setupConfigModal();
-    },
-
-    setupConfigModal() {
-        // Create config button in header if it doesn't exist
-        const header = document.querySelector('.header-stats');
-        if (header && !document.getElementById('tts-config-btn')) {
-            const configBtn = document.createElement('button');
-            configBtn.id = 'tts-config-btn';
-            configBtn.className = 'icon-btn';
-            configBtn.title = 'Configure TTS Server';
-            configBtn.innerHTML = '&#9881;'; // Gear icon
-            configBtn.style.cssText = 'font-size: 1.2rem; margin-left: 10px;';
-            configBtn.addEventListener('click', () => this.showConfigPrompt());
-            header.appendChild(configBtn);
-        }
-    },
-
-    showConfigPrompt() {
-        const currentUrl = this.API_BASE_URL || '(not configured)';
-        const newUrl = prompt(
-            `Enter your TTS backend URL:\n\nCurrent: ${currentUrl}\n\nExample: https://your-app.railway.app`,
-            this.API_BASE_URL
-        );
-
-        if (newUrl !== null) {
-            // Remove trailing slash if present
-            this.API_BASE_URL = newUrl.replace(/\/$/, '');
-            localStorage.setItem('aussie_slang_tts_url', this.API_BASE_URL);
-            alert(this.API_BASE_URL ? 'TTS server URL saved!' : 'TTS server URL cleared. Using browser speech.');
-        }
     },
 
     setupEventListeners() {
         // Flashcard mode speak buttons
-        document.getElementById('speak-term').addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent card flip
-            const term = document.getElementById('flashcard-term').textContent;
-            this.speak(term, e.target);
-        });
+        const speakTermBtn = document.getElementById('speak-term');
+        if (speakTermBtn) {
+            speakTermBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent card flip
+                const card = this.getCurrentFlashcard();
+                if (card) {
+                    this.playAudio(card.id, 'term', card.termPronunciation || card.term, e.target);
+                }
+            });
+        }
 
-        document.getElementById('speak-example').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const example = document.getElementById('flashcard-example').textContent;
-            // Remove quotes from example
-            this.speak(example.replace(/^"|"$/g, ''), e.target);
-        });
+        const speakExampleBtn = document.getElementById('speak-example');
+        if (speakExampleBtn) {
+            speakExampleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const card = this.getCurrentFlashcard();
+                if (card) {
+                    this.playAudio(card.id, 'example', card.example, e.target);
+                }
+            });
+        }
 
         // Review mode speak buttons
-        document.getElementById('speak-review-term').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const term = document.getElementById('review-term').textContent;
-            this.speak(term, e.target);
-        });
+        const speakReviewTermBtn = document.getElementById('speak-review-term');
+        if (speakReviewTermBtn) {
+            speakReviewTermBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const card = this.getCurrentReviewCard();
+                if (card) {
+                    this.playAudio(card.id, 'term', card.termPronunciation || card.term, e.target);
+                }
+            });
+        }
 
-        document.getElementById('speak-review-example').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const example = document.getElementById('review-example').textContent;
-            this.speak(example.replace(/^"|"$/g, ''), e.target);
-        });
+        const speakReviewExampleBtn = document.getElementById('speak-review-example');
+        if (speakReviewExampleBtn) {
+            speakReviewExampleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const card = this.getCurrentReviewCard();
+                if (card) {
+                    this.playAudio(card.id, 'example', card.example, e.target);
+                }
+            });
+        }
     },
 
-    async speak(text, button = null) {
+    // Get current flashcard from FlashcardMode
+    getCurrentFlashcard() {
+        if (typeof FlashcardMode !== 'undefined' && FlashcardMode.filteredCards) {
+            return FlashcardMode.filteredCards[FlashcardMode.currentIndex];
+        }
+        return null;
+    },
+
+    // Get current review card from SRS
+    getCurrentReviewCard() {
+        if (typeof SRS !== 'undefined' && SRS.currentCard) {
+            return SRS.currentCard;
+        }
+        return null;
+    },
+
+    // Play pre-recorded audio file
+    async playAudio(id, type, fallbackText, button = null) {
         // Stop any ongoing speech
         this.stop();
-
-        if (!text || text === 'Loading...') return;
 
         // Add speaking animation to button
         if (button) {
@@ -84,53 +86,33 @@ const Speech = {
 
         this.speaking = true;
 
-        // Use Fish.audio backend if configured, otherwise fall back to browser TTS
-        if (this.API_BASE_URL) {
-            await this.speakWithFishAudio(text, button);
-        } else {
-            this.speakWithBrowser(text, button);
-        }
-    },
+        // Construct audio file path
+        const audioPath = `${this.audioBasePath}${id}-${type}.mp3`;
 
-    async speakWithFishAudio(text, button) {
         try {
-            const response = await fetch(`${this.API_BASE_URL}/api/tts`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ text })
-            });
+            // Create audio element
+            this.currentAudio = new Audio(audioPath);
 
-            if (!response.ok) {
-                throw new Error(`TTS request failed: ${response.status}`);
-            }
-
-            // Get audio blob
-            const audioBlob = await response.blob();
-            const audioUrl = URL.createObjectURL(audioBlob);
-
-            // Play audio
-            this.currentAudio = new Audio(audioUrl);
-
+            // Set up event handlers
             this.currentAudio.onended = () => {
-                this.cleanupAudio(button, audioUrl);
+                this.cleanupAudio(button);
             };
 
-            this.currentAudio.onerror = (e) => {
-                console.error('Audio playback error:', e);
-                this.cleanupAudio(button, audioUrl);
+            this.currentAudio.onerror = () => {
+                console.warn(`Audio file not found: ${audioPath}, falling back to browser TTS`);
+                this.cleanupAudio(button);
+                // Fall back to browser TTS
+                this.speakWithBrowser(fallbackText, button);
             };
 
+            // Try to play
             await this.currentAudio.play();
 
         } catch (error) {
-            console.error('Fish.audio TTS error:', error);
+            console.error('Audio playback error:', error);
             this.cleanupAudio(button);
-
-            // Fall back to browser TTS on error
-            console.log('Falling back to browser TTS...');
-            this.speakWithBrowser(text, button);
+            // Fall back to browser TTS
+            this.speakWithBrowser(fallbackText, button);
         }
     },
 
@@ -167,17 +149,14 @@ const Speech = {
         synth.speak(utterance);
     },
 
-    cleanupAudio(button, audioUrl = null) {
+    cleanupAudio(button) {
         if (button) button.classList.remove('speaking');
         this.speaking = false;
         this.currentAudio = null;
-        if (audioUrl) {
-            URL.revokeObjectURL(audioUrl);
-        }
     },
 
     stop() {
-        // Stop Fish.audio playback
+        // Stop pre-recorded audio playback
         if (this.currentAudio) {
             this.currentAudio.pause();
             this.currentAudio.currentTime = 0;

@@ -38,6 +38,17 @@ const App = {
     },
 
     switchMode(mode) {
+        // Check if there's an active game in progress
+        if (this.hasActiveGame() && mode !== this.currentMode) {
+            if (!confirm('You have a game in progress. Switching modes will lose your progress. Continue?')) {
+                // Re-activate the current mode button
+                document.querySelectorAll('.mode-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.mode === this.currentMode);
+                });
+                return;
+            }
+        }
+
         this.currentMode = mode;
 
         // Update button states
@@ -55,6 +66,36 @@ const App = {
         if (mode === 'review') {
             SRSMode.updateStats();
         }
+    },
+
+    hasActiveGame() {
+        // Check if quiz is in progress
+        if (typeof QuizMode !== 'undefined' &&
+            !document.getElementById('quiz-start').classList.contains('hidden') === false &&
+            !document.getElementById('quiz-results').classList.contains('hidden') === false &&
+            !document.getElementById('quiz-question').classList.contains('hidden')) {
+            return true;
+        }
+
+        // Check if fill-in-the-blank is in progress
+        if (typeof FillBlankMode !== 'undefined' &&
+            !document.getElementById('fillblank-game').classList.contains('hidden')) {
+            return true;
+        }
+
+        // Check if sentence builder is in progress
+        if (typeof SentenceBuilder !== 'undefined' &&
+            !document.getElementById('builder-game').classList.contains('hidden')) {
+            return true;
+        }
+
+        // Check if SRS review is in progress
+        if (typeof SRSMode !== 'undefined' &&
+            !document.getElementById('review-card').classList.contains('hidden')) {
+            return true;
+        }
+
+        return false;
     },
 
     initializeModules() {
