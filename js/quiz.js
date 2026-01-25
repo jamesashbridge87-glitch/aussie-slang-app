@@ -6,6 +6,7 @@ const QuizMode = {
     totalQuestions: 10,
     direction: 'term-to-meaning',
     answered: false,
+    processing: false, // Prevents race condition on rapid clicks
 
     // Timed mode properties
     timedMode: false,
@@ -56,6 +57,7 @@ const QuizMode = {
         this.currentQuestion = 0;
         this.score = 0;
         this.answered = false;
+        this.processing = false;
 
         // Filter cards by category
         const category = document.getElementById('quiz-category').value;
@@ -117,9 +119,10 @@ const QuizMode = {
         // Update progress
         document.getElementById('quiz-current').textContent = this.currentQuestion + 1;
 
-        // Hide feedback
+        // Hide feedback and reset state
         document.getElementById('quiz-feedback').classList.add('hidden');
         this.answered = false;
+        this.processing = false;
 
         // Start timer if timed mode
         if (this.timedMode) {
@@ -182,7 +185,8 @@ const QuizMode = {
     timeUp() {
         this.stopTimer();
 
-        if (this.answered) return;
+        if (this.answered || this.processing) return;
+        this.processing = true;
         this.answered = true;
 
         SoundEffects.play('incorrect');
@@ -223,7 +227,8 @@ const QuizMode = {
     },
 
     selectAnswer(button) {
-        if (this.answered) return;
+        if (this.answered || this.processing) return;
+        this.processing = true;
         this.answered = true;
 
         // Stop timer if running

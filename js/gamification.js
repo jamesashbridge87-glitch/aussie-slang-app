@@ -2,6 +2,26 @@
 const Gamification = {
     STORAGE_KEY: 'aussie_slang_game',
 
+    // Safe localStorage helpers (prevents crashes in private browsing)
+    safeGetItem(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+            return null;
+        }
+    },
+
+    safeSetItem(key, value) {
+        try {
+            localStorage.setItem(key, value);
+            return true;
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+            return false;
+        }
+    },
+
     // XP rewards
     XP_REWARDS: {
         flashcardView: 1,
@@ -67,16 +87,21 @@ const Gamification = {
     },
 
     loadState() {
-        const saved = localStorage.getItem(this.STORAGE_KEY);
+        const saved = this.safeGetItem(this.STORAGE_KEY);
         if (saved) {
-            this.state = { ...this.defaultState, ...JSON.parse(saved) };
+            try {
+                this.state = { ...this.defaultState, ...JSON.parse(saved) };
+            } catch (e) {
+                console.warn('Failed to parse saved state:', e.message);
+                this.state = { ...this.defaultState };
+            }
         } else {
             this.state = { ...this.defaultState };
         }
     },
 
     saveState() {
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.state));
+        this.safeSetItem(this.STORAGE_KEY, JSON.stringify(this.state));
     },
 
     // XP and Leveling
@@ -115,7 +140,8 @@ const Gamification = {
         const nextLevelXP = this.getXPForNextLevel();
         const progress = this.state.xp - currentLevelXP;
         const needed = nextLevelXP - currentLevelXP;
-        return { progress, needed, percentage: (progress / needed) * 100 };
+        const percentage = needed > 0 ? (progress / needed) * 100 : 100;
+        return { progress, needed, percentage };
     },
 
     // Streak Management

@@ -7,6 +7,36 @@ const SRSMode = {
     currentCard: null,
     isFlipped: false,
 
+    // Safe localStorage helpers (prevents crashes in private browsing)
+    safeGetItem(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+            return null;
+        }
+    },
+
+    safeSetItem(key, value) {
+        try {
+            localStorage.setItem(key, value);
+            return true;
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+            return false;
+        }
+    },
+
+    safeRemoveItem(key) {
+        try {
+            localStorage.removeItem(key);
+            return true;
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+            return false;
+        }
+    },
+
     // Default card state
     defaultCardState: {
         easeFactor: 2.5,  // Multiplier for interval
@@ -55,24 +85,32 @@ const SRSMode = {
     },
 
     loadProgress() {
-        const stored = localStorage.getItem(this.STORAGE_KEY);
+        const stored = this.safeGetItem(this.STORAGE_KEY);
         if (stored) {
-            this.cardStates = JSON.parse(stored);
+            try {
+                this.cardStates = JSON.parse(stored);
+            } catch (e) {
+                console.warn('Failed to parse SRS progress:', e.message);
+                this.cardStates = {};
+            }
         } else {
-            // Initialize all cards with default state
             this.cardStates = {};
-            slangData.forEach(card => {
+        }
+
+        // Initialize any missing cards with default state
+        slangData.forEach(card => {
+            if (!this.cardStates[card.id]) {
                 this.cardStates[card.id] = {
                     ...this.defaultCardState,
                     nextReview: new Date().toISOString()
                 };
-            });
-            this.saveProgress();
-        }
+            }
+        });
+        this.saveProgress();
     },
 
     saveProgress() {
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.cardStates));
+        this.safeSetItem(this.STORAGE_KEY, JSON.stringify(this.cardStates));
     },
 
     updateStats() {
@@ -211,7 +249,7 @@ const SRSMode = {
 
     resetProgress() {
         if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
-            localStorage.removeItem(this.STORAGE_KEY);
+            this.safeRemoveItem(this.STORAGE_KEY);
             this.loadProgress();
             this.updateStats();
             this.showScreen('review-stats');

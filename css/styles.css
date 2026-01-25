@@ -1199,27 +1199,74 @@ a:hover {
     }
 
     .flashcard {
-        height: 250px;
+        min-height: 200px;
+        height: auto;
+    }
+
+    .flashcard-front,
+    .flashcard-back {
+        position: relative;
+        min-height: 200px;
+        height: auto;
+        padding: 20px 15px;
+    }
+
+    .flashcard.flipped .flashcard-front {
+        display: none;
+    }
+
+    .flashcard.flipped .flashcard-back {
+        transform: none;
     }
 
     .term {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 
     .meaning {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+    }
+
+    .example {
+        font-size: 0.95rem;
     }
 
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 12px 6px;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
     }
 
     .rating-grid {
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
     }
 
     .rating-btn {
-        width: 100%;
+        padding: 10px 8px;
+        font-size: 0.75rem;
+        width: auto;
+    }
+
+    /* Last two buttons span remaining space */
+    .rating-grid .rating-btn:nth-child(4) {
+        grid-column: 1 / 2;
+    }
+
+    .rating-grid .rating-btn:nth-child(5) {
+        grid-column: 2 / 4;
     }
 
     .controls-bar {
@@ -1242,6 +1289,12 @@ a:hover {
 
     .header-buttons {
         gap: 5px;
+    }
+
+    .speak-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
     }
 }
 
