@@ -61,15 +61,25 @@ const QuizMode = {
 
         // Filter cards by category
         const category = document.getElementById('quiz-category').value;
-        let availableCards = category === 'all'
-            ? [...slangData]
-            : slangData.filter(item => item.category === category);
+        const difficulty = document.getElementById('quiz-difficulty')?.value || 'all';
+
+        let availableCards = [...slangData];
+
+        // Apply category filter
+        if (category !== 'all') {
+            availableCards = availableCards.filter(item => item.category === category);
+        }
+
+        // Apply difficulty filter
+        if (difficulty !== 'all') {
+            availableCards = availableCards.filter(item => item.difficulty === difficulty);
+        }
 
         // Shuffle and limit questions
         this.questions = this.shuffleArray(availableCards).slice(0, this.totalQuestions);
 
         if (this.questions.length < 4) {
-            Gamification.showNotification('Not enough terms in this category. Select another.');
+            Gamification.showNotification('Not enough terms in that category, mate. Pick another one!');
             return;
         }
 
@@ -205,7 +215,7 @@ const QuizMode = {
 
         feedback.className = 'feedback incorrect';
         const correctAnswer = this.questions[this.currentQuestion];
-        feedbackText.textContent = `Time's up! The answer was: ${this.direction === 'term-to-meaning' ? correctAnswer.meaning : correctAnswer.term}`;
+        feedbackText.textContent = `Ran out of time, mate! It was: ${this.direction === 'term-to-meaning' ? correctAnswer.meaning : correctAnswer.term}`;
         feedback.classList.remove('hidden');
 
         // Update next button text
@@ -255,9 +265,9 @@ const QuizMode = {
 
             // Bonus message for fast answers in timed mode
             if (this.timedMode && this.timeRemaining >= 10) {
-                feedbackText.textContent = "Lightning fast! Correct!";
+                feedbackText.textContent = "Bloody quick! You nailed it!";
             } else {
-                feedbackText.textContent = "Correct! Good on ya!";
+                feedbackText.textContent = "Spot on, mate! Good on ya!";
             }
 
             SoundEffects.play('correct');
@@ -268,7 +278,7 @@ const QuizMode = {
             button.classList.add('incorrect');
             feedback.className = 'feedback incorrect';
             const correctAnswer = this.questions[this.currentQuestion];
-            feedbackText.textContent = `Wrong! The answer was: ${this.direction === 'term-to-meaning' ? correctAnswer.meaning : correctAnswer.term}`;
+            feedbackText.textContent = `Not quite! It was: ${this.direction === 'term-to-meaning' ? correctAnswer.meaning : correctAnswer.term}`;
             SoundEffects.play('incorrect');
         }
 
@@ -305,15 +315,15 @@ const QuizMode = {
         const message = document.getElementById('results-message');
 
         if (percentage === 100) {
-            message.textContent = "Strewth! You're a true blue Aussie!";
+            message.textContent = "You absolute legend! Perfect score! 🏆";
         } else if (percentage >= 80) {
-            message.textContent = "Ripper! You're almost fluent in Aussie!";
+            message.textContent = "Ripper effort! You're getting the hang of it!";
         } else if (percentage >= 60) {
-            message.textContent = "Not bad, mate! Keep practicing!";
+            message.textContent = "Good on ya, mate! Keep at it!";
         } else if (percentage >= 40) {
-            message.textContent = "She'll be right, mate. Give it another go!";
+            message.textContent = "No worries! Have another crack at it!";
         } else {
-            message.textContent = "No worries, mate. Practice makes perfect!";
+            message.textContent = "She'll be right! Practice makes perfect, mate!";
         }
 
         // Record quiz completion for gamification

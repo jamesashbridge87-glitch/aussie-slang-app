@@ -22,6 +22,7 @@ const App = {
 
     setupSoundToggle() {
         const toggle = document.getElementById('sound-toggle');
+        if (!toggle) return;
 
         // Set initial state from saved preference
         if (!SoundEffects.enabled) {
@@ -49,6 +50,17 @@ const App = {
             }
         }
 
+        // Stop any running timers or processes
+        if (typeof QuizMode !== 'undefined' && QuizMode.stopTimer) {
+            QuizMode.stopTimer();
+        }
+        if (typeof VoicePractice !== 'undefined' && VoicePractice.stopListening) {
+            VoicePractice.stopListening();
+        }
+        if (typeof Speech !== 'undefined' && Speech.stop) {
+            Speech.stop();
+        }
+
         this.currentMode = mode;
 
         // Update button states
@@ -69,29 +81,29 @@ const App = {
     },
 
     hasActiveGame() {
-        // Check if quiz is in progress
-        if (typeof QuizMode !== 'undefined' &&
-            !document.getElementById('quiz-start').classList.contains('hidden') === false &&
-            !document.getElementById('quiz-results').classList.contains('hidden') === false &&
-            !document.getElementById('quiz-question').classList.contains('hidden')) {
+        // Helper to check if element is visible (not hidden)
+        const isVisible = (id) => {
+            const el = document.getElementById(id);
+            return el && !el.classList.contains('hidden');
+        };
+
+        // Check if quiz is in progress (question screen visible)
+        if (typeof QuizMode !== 'undefined' && isVisible('quiz-question')) {
             return true;
         }
 
         // Check if fill-in-the-blank is in progress
-        if (typeof FillBlankMode !== 'undefined' &&
-            !document.getElementById('fillblank-game').classList.contains('hidden')) {
+        if (typeof FillBlankMode !== 'undefined' && isVisible('fillblank-game')) {
             return true;
         }
 
         // Check if sentence builder is in progress
-        if (typeof SentenceBuilder !== 'undefined' &&
-            !document.getElementById('builder-game').classList.contains('hidden')) {
+        if (typeof SentenceBuilder !== 'undefined' && isVisible('builder-game')) {
             return true;
         }
 
         // Check if SRS review is in progress
-        if (typeof SRSMode !== 'undefined' &&
-            !document.getElementById('review-card').classList.contains('hidden')) {
+        if (typeof SRSMode !== 'undefined' && isVisible('review-card')) {
             return true;
         }
 

@@ -1,6 +1,6 @@
 // Dark Mode Toggle
 const DarkMode = {
-    STORAGE_KEY: 'aussie_slang_darkmode',
+    STORAGE_KEY: 'your_aussie_uncle_darkmode',
     enabled: true, // Default to dark mode (matches brand colors)
 
     // Safe localStorage helpers (prevents crashes in private browsing)

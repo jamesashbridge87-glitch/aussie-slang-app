@@ -63,10 +63,34 @@ a:hover {
     position: relative;
 }
 
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
 .header h1 {
     color: var(--heading-color);
-    font-size: 2rem;
-    margin-bottom: 20px;
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 /* Sound Toggle */
@@ -256,6 +280,12 @@ a:hover {
     font-size: 1.1rem;
     font-style: italic;
     color: var(--text-light);
+}
+
+.flashcard-front .example {
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 15px;
+    font-size: 1rem;
 }
 
 /* Speak Button */
@@ -497,7 +527,13 @@ a:hover {
 
 .review-stats h2 {
     color: var(--heading-color);
+    margin-bottom: 10px;
+}
+
+.review-intro {
+    color: var(--text-light);
     margin-bottom: 25px;
+    font-size: 1rem;
 }
 
 .stats-grid {
@@ -1080,6 +1116,28 @@ a:hover {
     50% { opacity: 0.3; }
 }
 
+/* Target Sentence Display */
+.voice-target-sentence {
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 15px;
+    padding: 12px 20px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--primary);
+    text-align: left;
+    min-height: 0;
+}
+
+.voice-target-sentence:empty {
+    display: none;
+}
+
+.voice-target-sentence .slang-highlight {
+    color: var(--primary);
+    font-weight: 700;
+}
+
 /* Voice Feedback */
 .voice-practice-feedback {
     background: var(--card-bg);
@@ -1101,11 +1159,14 @@ a:hover {
 }
 
 .voice-transcript {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: var(--text-light);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     font-style: italic;
     min-height: 30px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: var(--radius);
 }
 
 .voice-transcript.final {
@@ -1113,63 +1174,155 @@ a:hover {
     font-style: normal;
 }
 
-.voice-result {
+/* Multi-Score Breakdown */
+.score-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.score-item {
+    display: grid;
+    grid-template-columns: 130px 1fr 50px;
+    align-items: center;
+    gap: 12px;
+}
+
+.score-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-align: left;
+}
+
+.score-bar {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.score-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease, background 0.3s ease;
+    width: 0%;
+}
+
+.score-bar-fill.excellent {
+    background: linear-gradient(90deg, #4caf50, #8bc34a);
+}
+
+.score-bar-fill.good {
+    background: linear-gradient(90deg, #8bc34a, #cddc39);
+}
+
+.score-bar-fill.fair {
+    background: linear-gradient(90deg, #ffc107, #ffeb3b);
+}
+
+.score-bar-fill.needs-work {
+    background: linear-gradient(90deg, #ff9800, #f44336);
+}
+
+.score-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+    text-align: right;
+}
+
+/* Overall Score */
+.overall-result {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 15px;
-    flex-wrap: wrap;
+    padding: 15px;
+    background: rgba(102, 126, 234, 0.08);
+    border-radius: var(--radius);
+    margin-bottom: 15px;
 }
 
-.voice-score {
-    font-size: 2rem;
-    font-weight: 700;
-    padding: 8px 20px;
-    border-radius: 20px;
-    background: #e0e0e0;
+.overall-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-light);
 }
 
-.voice-score.excellent {
+.overall-score {
+    font-size: 2.2rem;
+    font-weight: 800;
+    padding: 5px 15px;
+    border-radius: 12px;
+}
+
+.overall-score.excellent {
     background: linear-gradient(135deg, #4caf50, #8bc34a);
     color: white;
 }
 
-.voice-score.good {
+.overall-score.good {
     background: linear-gradient(135deg, #8bc34a, #cddc39);
     color: white;
 }
 
-.voice-score.close {
+.overall-score.fair {
     background: linear-gradient(135deg, #ffc107, #ffeb3b);
     color: #333;
 }
 
-.voice-score.partial {
-    background: linear-gradient(135deg, #ff9800, #ffc107);
+.overall-score.needs-work {
+    background: linear-gradient(135deg, #ff9800, #f44336);
     color: white;
 }
 
-.voice-score.tryagain,
-.voice-score.different {
-    background: linear-gradient(135deg, #f44336, #ff5722);
-    color: white;
-}
-
-.voice-feedback {
+/* Voice Message */
+.voice-message {
     font-size: 1.1rem;
     font-weight: 600;
+    text-align: center;
+    padding: 10px;
 }
 
-.voice-feedback.excellent { color: #4caf50; }
-.voice-feedback.good { color: #8bc34a; }
-.voice-feedback.close { color: #ff9800; }
-.voice-feedback.partial { color: #ff9800; }
-.voice-feedback.tryagain { color: #f44336; }
-.voice-feedback.different { color: #f44336; }
-.voice-feedback.error { color: #f44336; }
-.voice-feedback.listening {
-    color: var(--primary);
-    animation: pulse 1s ease infinite;
+.voice-message.excellent { color: #4caf50; }
+.voice-message.good { color: #8bc34a; }
+.voice-message.fair { color: #ff9800; }
+.voice-message.needs-work { color: #f44336; }
+.voice-message.error { color: #f44336; }
+
+/* Dark mode adjustments */
+[data-theme="dark"] .voice-target-sentence {
+    background: rgba(102, 126, 234, 0.15);
+}
+
+[data-theme="dark"] .voice-transcript {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .score-bar {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .overall-result {
+    background: rgba(102, 126, 234, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .score-item {
+        grid-template-columns: 100px 1fr 45px;
+        gap: 8px;
+    }
+
+    .score-label {
+        font-size: 0.75rem;
+    }
+
+    .overall-score {
+        font-size: 1.8rem;
+    }
 }
 
 /* Browser support notice */

@@ -2,7 +2,7 @@
 // Based on a simplified SM-2 algorithm
 
 const SRSMode = {
-    STORAGE_KEY: 'aussie_slang_srs',
+    STORAGE_KEY: 'your_aussie_uncle_srs',
     reviewQueue: [],
     currentCard: null,
     isFlipped: false,
@@ -138,10 +138,10 @@ const SRSMode = {
         // Update start button state
         const startBtn = document.getElementById('start-review');
         if (dueToday === 0) {
-            startBtn.textContent = 'No Cards Due';
+            startBtn.textContent = 'All caught up, legend!';
             startBtn.disabled = true;
         } else {
-            startBtn.textContent = `Start Review (${dueToday})`;
+            startBtn.textContent = `Let's review (${dueToday})`;
             startBtn.disabled = false;
         }
     },
@@ -158,7 +158,7 @@ const SRSMode = {
         this.reviewQueue = this.getCardsForReview();
 
         if (this.reviewQueue.length === 0) {
-            alert('No cards due for review! Come back later.');
+            Gamification.showNotification('No cards due right now, mate! Come back later.');
             return;
         }
 
@@ -190,7 +190,7 @@ const SRSMode = {
         document.getElementById('review-flashcard').classList.remove('flipped');
         document.getElementById('rating-buttons').classList.add('hidden');
         document.getElementById('flip-review').classList.remove('hidden');
-        document.getElementById('flip-review').textContent = 'Show Answer';
+        document.getElementById('flip-review').textContent = 'Show me the answer';
 
         // Update card content
         document.getElementById('review-term').textContent = this.currentCard.term;
@@ -248,11 +248,12 @@ const SRSMode = {
     },
 
     resetProgress() {
-        if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+        if (confirm('You sure you want to start fresh, mate? All your progress will be gone!')) {
             this.safeRemoveItem(this.STORAGE_KEY);
             this.loadProgress();
             this.updateStats();
             this.showScreen('review-stats');
+            Gamification.showNotification('All reset! Fresh start, legend!');
         }
     },
 

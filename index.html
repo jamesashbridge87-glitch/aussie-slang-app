@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aussie Slang Learner</title>
+    <title>Slang Mate - Your Aussie Uncle</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
 </head>
 <body>
     <div class="app-container" id="app-container">
         <header class="header">
             <div class="header-top">
-                <h1>Aussie Slang Learner</h1>
+                <div class="brand">
+                    <img src="images/logo.png" alt="Slang Mate" class="logo" id="logo">
+                    <h1>Slang Mate</h1>
+                </div>
                 <div class="header-stats">
                     <span class="streak-badge" id="streak-badge" title="Daily Streak">🔥 <span id="streak-count">0</span></span>
                     <span class="xp-badge" id="xp-badge" title="Experience Points">⭐ <span id="xp-count">0</span> XP</span>
@@ -27,7 +31,7 @@
                 </div>
             </div>
             <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search slang terms..." class="search-input">
+                <input type="text" id="search-input" placeholder="What slang are you after, mate?" class="search-input">
                 <button class="search-clear hidden" id="search-clear">✕</button>
             </div>
             <nav class="mode-selector">
@@ -65,17 +69,16 @@
                 </div>
 
                 <div class="flashcard-container">
-                    <div class="flashcard" id="flashcard">
+                    <div class="flashcard" id="flashcard" role="button" tabindex="0" aria-label="Flashcard - press Enter or Space to flip">
                         <div class="flashcard-inner">
                             <div class="flashcard-front">
                                 <span class="difficulty-badge" id="card-difficulty"></span>
                                 <span class="term" id="flashcard-term">Loading...</span>
-                                <button class="speak-btn" id="speak-term" title="Hear pronunciation" aria-label="Hear term pronunciation">🔈</button>
+                                <span class="example" id="flashcard-example"></span>
+                                <button class="speak-btn" id="speak-term" title="Hear example" aria-label="Hear example sentence">🔈</button>
                             </div>
                             <div class="flashcard-back">
                                 <span class="meaning" id="flashcard-meaning"></span>
-                                <span class="example" id="flashcard-example"></span>
-                                <button class="speak-btn" id="speak-example" title="Hear example" aria-label="Hear example sentence">🔈</button>
                             </div>
                         </div>
                     </div>
@@ -90,12 +93,48 @@
                             <span class="recording-indicator" id="recording-indicator"></span>
                         </button>
                     </div>
-                    <div class="voice-practice-feedback hidden" id="voice-practice-feedback">
+                    <div class="voice-target-sentence" id="voice-target-sentence"></div>
+                    <div class="voice-practice-feedback hidden" id="voice-practice-feedback" role="region" aria-live="polite" aria-label="Voice practice results">
                         <div class="voice-transcript" id="voice-transcript"></div>
-                        <div class="voice-result">
-                            <span class="voice-score" id="voice-score"></span>
-                            <span class="voice-feedback" id="voice-feedback"></span>
+
+                        <!-- Multi-Score Display -->
+                        <div class="score-breakdown">
+                            <div class="score-item">
+                                <span class="score-label">Word Accuracy</span>
+                                <div class="score-bar">
+                                    <div class="score-bar-fill" id="bar-word-accuracy"></div>
+                                </div>
+                                <span class="score-value" id="score-word-accuracy">0%</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Confidence</span>
+                                <div class="score-bar">
+                                    <div class="score-bar-fill" id="bar-confidence"></div>
+                                </div>
+                                <span class="score-value" id="score-confidence">0%</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Slang Recognition</span>
+                                <div class="score-bar">
+                                    <div class="score-bar-fill" id="bar-slang-recognition"></div>
+                                </div>
+                                <span class="score-value" id="score-slang-recognition">0%</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Fluency</span>
+                                <div class="score-bar">
+                                    <div class="score-bar-fill" id="bar-fluency"></div>
+                                </div>
+                                <span class="score-value" id="score-fluency">0%</span>
+                            </div>
                         </div>
+
+                        <!-- Overall Score -->
+                        <div class="overall-result">
+                            <span class="overall-label">Overall</span>
+                            <span class="overall-score" id="overall-score"></span>
+                        </div>
+                        <div class="voice-message" id="voice-message"></div>
                     </div>
                 </div>
 
@@ -130,18 +169,18 @@
 
                 <div class="quiz-container">
                     <div class="quiz-start" id="quiz-start">
-                        <h2>Ready for a Quiz?</h2>
-                        <p>Test your knowledge of Aussie slang!</p>
+                        <h2>Ready to have a crack?</h2>
+                        <p>Let's see how well you know your Aussie slang!</p>
                         <div class="high-score-display">
-                            <span>🏆 High Score: <span id="high-score">0</span></span>
+                            <span>🏆 Your best: <span id="high-score">0</span></span>
                         </div>
-                        <button class="start-btn" id="start-quiz">Start Quiz</button>
+                        <button class="start-btn" id="start-quiz">Let's go!</button>
                     </div>
 
                     <div class="quiz-question hidden" id="quiz-question">
-                        <div class="quiz-timer-container hidden" id="quiz-timer-container">
+                        <div class="quiz-timer-container hidden" id="quiz-timer-container" role="timer" aria-live="polite">
                             <div class="timer-display">
-                                <span id="timer-text">15</span>s
+                                <span id="timer-text" aria-label="seconds remaining">15</span>s
                             </div>
                             <div class="timer-bar-container">
                                 <div class="timer-bar" id="timer-bar"></div>
@@ -157,20 +196,20 @@
                                 <!-- Options populated by JS -->
                             </div>
                         </div>
-                        <div class="feedback hidden" id="quiz-feedback">
+                        <div class="feedback hidden" id="quiz-feedback" role="alert" aria-live="polite">
                             <p id="feedback-text"></p>
                             <button class="next-btn" id="next-question">Next Question</button>
                         </div>
                     </div>
 
                     <div class="quiz-results hidden" id="quiz-results">
-                        <h2>Quiz Complete!</h2>
+                        <h2>All done!</h2>
                         <div class="results-score">
                             <span class="big-score" id="final-score">0</span>
                             <span class="score-label">out of <span id="final-total">10</span></span>
                         </div>
                         <p id="results-message">Good effort, mate!</p>
-                        <button class="start-btn" id="restart-quiz">Try Again</button>
+                        <button class="start-btn" id="restart-quiz">Have another crack</button>
                     </div>
                 </div>
             </section>
@@ -189,9 +228,9 @@
                 <div class="fillblank-container">
                     <div class="fillblank-start" id="fillblank-start">
                         <h2>Fill in the Blank</h2>
-                        <p>Complete the sentences with the correct Aussie slang!</p>
+                        <p>Pop the right slang word into each sentence!</p>
                         <p class="mode-description">Type the missing word to complete each sentence.</p>
-                        <button class="start-btn" id="start-fillblank">Start Game</button>
+                        <button class="start-btn" id="start-fillblank">Let's go!</button>
                     </div>
 
                     <div class="fillblank-game hidden" id="fillblank-game">
@@ -204,12 +243,12 @@
                             <p class="fillblank-sentence" id="fillblank-sentence">Loading sentence...</p>
                             <p class="fillblank-hint" id="fillblank-hint"></p>
                             <div class="fillblank-input-container">
-                                <input type="text" id="fillblank-input" class="fillblank-input" placeholder="Type the slang word..." autocomplete="off">
+                                <input type="text" id="fillblank-input" class="fillblank-input" placeholder="What's the word, mate?" autocomplete="off">
                                 <button class="submit-btn" id="submit-fillblank">Check</button>
                             </div>
                         </div>
 
-                        <div class="fillblank-feedback hidden" id="fillblank-feedback">
+                        <div class="fillblank-feedback hidden" id="fillblank-feedback" role="alert" aria-live="polite">
                             <p id="fillblank-feedback-text"></p>
                             <button class="next-btn" id="next-fillblank">Next</button>
                         </div>
@@ -232,9 +271,9 @@
                 <div class="builder-container">
                     <div class="builder-start" id="builder-start">
                         <h2>Sentence Builder</h2>
-                        <p>Drag and drop the correct slang word to complete each sentence!</p>
+                        <p>Pick the right slang word for each sentence!</p>
                         <p class="mode-description">Click a word, then click the blank to place it.</p>
-                        <button class="start-btn" id="start-builder">Start Game</button>
+                        <button class="start-btn" id="start-builder">Let's build!</button>
                     </div>
 
                     <div class="builder-game hidden" id="builder-game">
@@ -258,19 +297,19 @@
 
                         <p class="hint-text hidden" id="hint-text"></p>
 
-                        <div class="builder-feedback hidden" id="builder-feedback">
+                        <div class="builder-feedback hidden" id="builder-feedback" role="alert" aria-live="polite">
                             <p id="builder-feedback-text"></p>
                         </div>
                     </div>
 
                     <div class="builder-results hidden" id="builder-results">
-                        <h2>Game Complete!</h2>
+                        <h2>All done!</h2>
                         <div class="results-score">
                             <span class="big-score" id="builder-final-score">0</span>
                             <span class="score-label">out of <span id="builder-final-total">10</span></span>
                         </div>
                         <p id="builder-results-message">Good effort, mate!</p>
-                        <button class="start-btn" id="restart-builder">Play Again</button>
+                        <button class="start-btn" id="restart-builder">Have another go</button>
                     </div>
                 </div>
             </section>
@@ -279,7 +318,8 @@
             <section id="review-mode" class="mode-section">
                 <div class="review-container">
                     <div class="review-stats" id="review-stats">
-                        <h2>Spaced Repetition Review</h2>
+                        <h2>Daily Review</h2>
+                        <p class="review-intro">Keep coming back to lock in what you've learned!</p>
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <span class="stat-number" id="due-today">0</span>
@@ -287,15 +327,15 @@
                             </div>
                             <div class="stat-card">
                                 <span class="stat-number" id="total-learned">0</span>
-                                <span class="stat-label">Total Learned</span>
+                                <span class="stat-label">Learning</span>
                             </div>
                             <div class="stat-card">
                                 <span class="stat-number" id="mastered-count">0</span>
                                 <span class="stat-label">Mastered</span>
                             </div>
                         </div>
-                        <button class="start-btn" id="start-review">Start Review</button>
-                        <button class="reset-btn" id="reset-progress">Reset Progress</button>
+                        <button class="start-btn" id="start-review">Let's review</button>
+                        <button class="reset-btn" id="reset-progress">Start Fresh</button>
                     </div>
 
                     <div class="review-card hidden" id="review-card">
@@ -317,21 +357,21 @@
                         </div>
                         <button class="flip-btn" id="flip-review">Show Answer</button>
                         <div class="rating-buttons hidden" id="rating-buttons">
-                            <p>How well did you know this?</p>
+                            <p>How'd you go with that one?</p>
                             <div class="rating-grid">
-                                <button class="rating-btn rating-1" data-rating="1">Didn't know</button>
-                                <button class="rating-btn rating-2" data-rating="2">Hard</button>
-                                <button class="rating-btn rating-3" data-rating="3">Good</button>
+                                <button class="rating-btn rating-1" data-rating="1">No idea</button>
+                                <button class="rating-btn rating-2" data-rating="2">Struggled</button>
+                                <button class="rating-btn rating-3" data-rating="3">Got it</button>
                                 <button class="rating-btn rating-4" data-rating="4">Easy</button>
-                                <button class="rating-btn rating-5" data-rating="5">Perfect</button>
+                                <button class="rating-btn rating-5" data-rating="5">Nailed it!</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="review-complete hidden" id="review-complete">
-                        <h2>Review Complete!</h2>
-                        <p>You've reviewed all due cards. Come back later for more!</p>
-                        <button class="start-btn" id="back-to-stats">View Stats</button>
+                        <h2>You're all done!</h2>
+                        <p>Nice one! Come back tomorrow for more review.</p>
+                        <button class="start-btn" id="back-to-stats">Check your stats</button>
                     </div>
                 </div>
             </section>
@@ -339,19 +379,19 @@
             <!-- Achievements Mode -->
             <section id="achievements-mode" class="mode-section">
                 <div class="achievements-container">
-                    <h2>Your Achievements</h2>
+                    <h2>Your Progress</h2>
 
                     <div class="daily-challenge" id="daily-challenge">
-                        <h3>📅 Daily Challenge</h3>
+                        <h3>📅 Today's Word</h3>
                         <div class="challenge-card" id="challenge-card">
                             <p class="challenge-term" id="challenge-term">Loading...</p>
-                            <p class="challenge-hint">Learn this term today!</p>
-                            <button class="start-btn" id="learn-challenge">Learn Now</button>
+                            <p class="challenge-hint">Learn this one today, mate!</p>
+                            <button class="start-btn" id="learn-challenge">Let's learn it!</button>
                         </div>
                     </div>
 
                     <div class="level-progress">
-                        <h3>Level Progress</h3>
+                        <h3>Your Level</h3>
                         <div class="level-bar-container">
                             <div class="level-bar" id="level-progress-bar"></div>
                         </div>
@@ -363,9 +403,9 @@
                     </div>
 
                     <div class="favorites-section">
-                        <h3>⭐ Favorite Terms (<span id="favorites-count">0</span>)</h3>
+                        <h3>⭐ Your Faves (<span id="favorites-count">0</span>)</h3>
                         <div class="favorites-list" id="favorites-list">
-                            <p class="no-favorites">No favorites yet. Click ☆ on a flashcard to add!</p>
+                            <p class="no-favorites">No faves yet, mate! Hit the ☆ on any card to save it here.</p>
                         </div>
                     </div>
                 </div>
@@ -373,7 +413,7 @@
         </main>
 
         <footer class="footer">
-            <p>Learn Australian slang the smart way!</p>
+            <p>Slang Mate by <strong>Your Aussie Uncle</strong></p>
         </footer>
     </div>
 

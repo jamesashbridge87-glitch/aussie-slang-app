@@ -32,13 +32,13 @@ const SoundEffects = {
         }, { once: true });
 
         // Load saved preference
-        const saved = this.safeGetItem('aussie_slang_sound');
+        const saved = this.safeGetItem('your_aussie_uncle_sound');
         this.enabled = saved !== 'false';
     },
 
     toggle() {
         this.enabled = !this.enabled;
-        this.safeSetItem('aussie_slang_sound', this.enabled);
+        this.safeSetItem('your_aussie_uncle_sound', this.enabled);
         return this.enabled;
     },
 

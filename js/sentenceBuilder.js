@@ -27,6 +27,11 @@ const SentenceBuilder = {
         // Shuffle and select sentences
         this.sentences = this.shuffleArray([...sentenceTemplates]).slice(0, this.totalQuestions);
 
+        if (this.sentences.length < 5) {
+            Gamification.showNotification('Not enough sentences ready, mate!');
+            return;
+        }
+
         // Update UI
         document.getElementById('builder-score').textContent = '0';
         document.getElementById('builder-total').textContent = this.sentences.length;
@@ -191,13 +196,14 @@ const SentenceBuilder = {
             this.score++;
             document.getElementById('builder-score').textContent = this.score;
             blank.classList.add('correct');
-            feedbackText.textContent = "Correct! Well done!";
+            feedbackText.textContent = "Spot on, legend!";
             feedback.className = 'builder-feedback correct';
             SoundEffects.play('correct');
             Gamification.addXP(5, 'builder');
+            Gamification.recordQuizCorrect();
         } else {
             blank.classList.add('incorrect');
-            feedbackText.textContent = `Not quite! The answer was "${this.currentSentence.answer}"`;
+            feedbackText.textContent = `Close! It was "${this.currentSentence.answer}"`;
             feedback.className = 'builder-feedback incorrect';
             SoundEffects.play('incorrect');
         }
@@ -236,17 +242,19 @@ const SentenceBuilder = {
         const message = document.getElementById('builder-results-message');
 
         if (percentage === 100) {
-            message.textContent = "Perfect! You're a sentence building legend!";
+            message.textContent = "You absolute legend! Perfect score! 🏆";
         } else if (percentage >= 80) {
-            message.textContent = "Ripper effort! You've got the hang of it!";
+            message.textContent = "Ripper effort! You're getting the hang of it!";
         } else if (percentage >= 60) {
-            message.textContent = "Not bad! Keep practicing, mate!";
+            message.textContent = "Good on ya, mate! Keep at it!";
+        } else if (percentage >= 40) {
+            message.textContent = "No worries! Have another crack at it!";
         } else {
-            message.textContent = "She'll be right! Have another crack at it!";
+            message.textContent = "She'll be right! Practice makes perfect, mate!";
         }
 
-        // Record completion
-        Gamification.addXP(20, 'builder-complete');
+        // Record completion for gamification
+        Gamification.recordQuizComplete(this.score, this.sentences.length);
     },
 
     showScreen(screenId) {

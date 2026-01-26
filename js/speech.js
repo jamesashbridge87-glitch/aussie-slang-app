@@ -18,21 +18,12 @@ const Speech = {
                 e.stopPropagation(); // Prevent card flip
                 const card = this.getCurrentFlashcard();
                 if (card) {
-                    this.playAudio(card.id, 'term', card.termPronunciation || card.term, e.target);
-                }
-            });
-        }
-
-        const speakExampleBtn = document.getElementById('speak-example');
-        if (speakExampleBtn) {
-            speakExampleBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const card = this.getCurrentFlashcard();
-                if (card) {
+                    // Use example audio for terms - sounds more natural than isolated words
                     this.playAudio(card.id, 'example', card.example, e.target);
                 }
             });
         }
+
 
         // Review mode speak buttons
         const speakReviewTermBtn = document.getElementById('speak-review-term');
@@ -41,7 +32,8 @@ const Speech = {
                 e.stopPropagation();
                 const card = this.getCurrentReviewCard();
                 if (card) {
-                    this.playAudio(card.id, 'term', card.termPronunciation || card.term, e.target);
+                    // Use example audio for terms - sounds more natural than isolated words
+                    this.playAudio(card.id, 'example', card.example, e.target);
                 }
             });
         }
@@ -68,8 +60,8 @@ const Speech = {
 
     // Get current review card from SRS
     getCurrentReviewCard() {
-        if (typeof SRS !== 'undefined' && SRS.currentCard) {
-            return SRS.currentCard;
+        if (typeof SRSMode !== 'undefined' && SRSMode.currentCard) {
+            return SRSMode.currentCard;
         }
         return null;
     },
