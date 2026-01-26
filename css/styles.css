@@ -1292,6 +1292,44 @@ a:hover {
 .voice-message.needs-work { color: #f44336; }
 .voice-message.error { color: #f44336; }
 
+/* Voice Feedback Action Buttons */
+.voice-feedback-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.voice-action-btn {
+    padding: 12px 24px;
+    border: 2px solid var(--primary);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--primary);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.voice-action-btn:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.voice-action-btn.primary {
+    background: var(--primary);
+    color: white;
+}
+
+.voice-action-btn.primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
 /* Dark mode adjustments */
 [data-theme="dark"] .voice-target-sentence {
     background: rgba(102, 126, 234, 0.15);

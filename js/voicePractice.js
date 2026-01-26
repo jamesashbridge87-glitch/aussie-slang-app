@@ -182,6 +182,26 @@ const VoicePractice = {
         if (practiceBtn) {
             practiceBtn.addEventListener('click', () => this.toggleListening());
         }
+
+        // Voice feedback action buttons
+        const tryAgainBtn = document.getElementById('voice-try-again');
+        if (tryAgainBtn) {
+            tryAgainBtn.addEventListener('click', () => {
+                this.resetFeedback();
+                this.startListening();
+            });
+        }
+
+        const nextCardBtn = document.getElementById('voice-next-card');
+        if (nextCardBtn) {
+            nextCardBtn.addEventListener('click', () => {
+                this.resetFeedback();
+                // Trigger next card in flashcard mode
+                if (typeof FlashcardMode !== 'undefined' && FlashcardMode.nextCard) {
+                    FlashcardMode.nextCard();
+                }
+            });
+        }
     },
 
     setupRecognitionHandlers() {
