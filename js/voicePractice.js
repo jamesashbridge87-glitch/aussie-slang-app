@@ -211,6 +211,7 @@ const VoicePractice = {
             this.isListening = true;
             this.startTime = Date.now();
             this.updateUI('listening');
+            this.showSoundWave(true);
             SoundEffects.play('click');
         };
 
@@ -219,9 +220,8 @@ const VoicePractice = {
             const transcript = results[0].transcript;
             const isFinal = results.isFinal;
 
-            this.showTranscript(transcript, isFinal);
-
             if (isFinal) {
+                this.showSoundWave(false);
                 const speakingTime = (Date.now() - this.startTime) / 1000;
                 this.evaluatePronunciation(transcript, results, speakingTime);
             }
@@ -230,6 +230,7 @@ const VoicePractice = {
         this.recognition.onerror = (event) => {
             console.error('Speech recognition error:', event.error);
             this.isListening = false;
+            this.showSoundWave(false);
 
             let message = 'Error occurred. Please try again.';
             if (event.error === 'no-speech') {
@@ -246,6 +247,7 @@ const VoicePractice = {
 
         this.recognition.onend = () => {
             this.isListening = false;
+            this.showSoundWave(false);
             this.updateUI('idle');
         };
     },
@@ -764,5 +766,12 @@ const VoicePractice = {
         if (messageEl) messageEl.textContent = '';
 
         this.stopListening();
+    },
+
+    showSoundWave(show) {
+        const container = document.getElementById('sound-wave-container');
+        if (container) {
+            container.classList.toggle('hidden', !show);
+        }
     }
 };

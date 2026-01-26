@@ -94,8 +94,15 @@
                         </button>
                     </div>
                     <div class="voice-target-sentence" id="voice-target-sentence"></div>
+                    <!-- Sound Wave Animation (shows while listening) -->
+                    <div class="sound-wave-container hidden" id="sound-wave-container">
+                        <div class="sound-wave">
+                            <span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                        <p class="listening-text">Listening...</p>
+                    </div>
+
                     <div class="voice-practice-feedback hidden" id="voice-practice-feedback" role="region" aria-live="polite" aria-label="Voice practice results">
-                        <div class="voice-transcript" id="voice-transcript"></div>
 
                         <!-- Multi-Score Display -->
                         <div class="score-breakdown">
