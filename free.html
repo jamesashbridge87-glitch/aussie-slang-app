@@ -983,11 +983,18 @@
         // Flashcard flip
         flashcard.addEventListener('click', (e) => {
             if (e.target.closest('.speak-btn')) return;
-            flashcard.classList.toggle('flipped');
 
-            if (!flowState.flipped) {
+            // Only allow flip if not already flipped (one-way on landing page)
+            if (!flashcard.classList.contains('flipped')) {
+                flashcard.classList.add('flipped');
                 flowState.flipped = true;
                 updateVisualStates();
+
+                // Auto-flip back after 2 seconds, then highlight practice button
+                setTimeout(() => {
+                    flashcard.classList.remove('flipped');
+                    // Practice button is already pulsing from updateVisualStates
+                }, 2000);
             }
         });
 
