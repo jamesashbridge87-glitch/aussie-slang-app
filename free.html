@@ -46,6 +46,7 @@
 
         html {
             scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
         }
 
         body {
@@ -54,6 +55,8 @@
             color: var(--text);
             min-height: 100vh;
             line-height: 1.6;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: none;
         }
 
         .container {
@@ -89,23 +92,15 @@
         }
 
         .try-prompt {
-            font-size: 1.2rem;
+            font-size: 1.6rem;
             color: var(--secondary);
-            font-weight: 600;
+            font-weight: 700;
+            margin-top: 10px;
         }
 
         /* Demo Section */
         .demo-section {
-            padding: 20px 0;
-        }
-
-        .demo-label {
-            text-align: center;
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            padding: 10px 0;
         }
 
         /* Flashcard - matches main app exactly */
@@ -514,15 +509,20 @@
             }
 
             .headline {
-                font-size: 1.6rem;
+                font-size: 1.5rem;
+                padding: 0 5px;
             }
 
             .subheadline {
                 font-size: 1rem;
             }
 
+            .try-prompt {
+                font-size: 1.4rem;
+            }
+
             .flashcard {
-                min-height: 180px;
+                min-height: 200px;
                 height: auto;
                 max-width: 100%;
             }
@@ -530,9 +530,9 @@
             .flashcard-front,
             .flashcard-back {
                 position: relative;
-                min-height: 180px;
+                min-height: 200px;
                 height: auto;
-                padding: 20px 15px;
+                padding: 25px 15px;
             }
 
             .flashcard.flipped .flashcard-front {
@@ -544,7 +544,7 @@
             }
 
             .term {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
             }
 
             .meaning {
@@ -552,7 +552,19 @@
             }
 
             .example {
+                font-size: 0.9rem;
+            }
+
+            .practice-btn {
+                padding: 16px 24px;
+                font-size: 1rem;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .voice-target {
                 font-size: 0.95rem;
+                padding: 15px;
             }
 
             .score-item {
@@ -564,17 +576,57 @@
                 font-size: 0.75rem;
             }
 
+            .results-section {
+                padding: 20px 15px;
+            }
+
+            .overall-result {
+                flex-direction: column;
+                gap: 8px;
+                padding: 15px;
+            }
+
+            .overall-score {
+                font-size: 2rem;
+            }
+
+            .capture-section {
+                padding: 25px 20px;
+            }
+
             .capture-headline {
-                font-size: 1.3rem;
+                font-size: 1.25rem;
             }
 
             .benefit-item {
-                font-size: 0.95rem;
+                font-size: 0.9rem;
+            }
+
+            .email-input {
+                padding: 14px 16px;
+                font-size: 16px; /* Prevents iOS zoom */
             }
 
             .submit-btn {
                 font-size: 1.1rem;
                 padding: 16px 25px;
+            }
+
+            .trust-text {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Touch-friendly tap targets */
+        @media (hover: none) and (pointer: coarse) {
+            .speak-btn,
+            .practice-btn,
+            .submit-btn {
+                min-height: 48px;
+            }
+
+            .flashcard {
+                -webkit-tap-highlight-color: transparent;
             }
         }
     </style>
@@ -584,15 +636,13 @@
         <!-- Hero Section -->
         <section class="hero">
             <img src="images/logo-white.png" alt="Your Aussie Uncle" class="logo">
-            <h1 class="headline">Stop nodding and smiling when you have no idea what they just said</h1>
+            <h1 class="headline">Stop nodding and smiling when you have no idea what they just said 😰</h1>
             <p class="subheadline">Learn 200+ Aussie slang words with voice practice</p>
             <p class="try-prompt">Try it now 👇</p>
         </section>
 
         <!-- Demo Section -->
         <section class="demo-section">
-            <p class="demo-label">Give it a go</p>
-
             <!-- Flashcard -->
             <div class="flashcard-container">
                 <div class="flashcard" id="demo-flashcard">
