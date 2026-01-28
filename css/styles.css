@@ -625,7 +625,7 @@ a:hover {
 
 .rating-1 { background: #dc3545; }
 .rating-2 { background: #fd7e14; }
-.rating-3 { background: #ffc107; color: var(--text); }
+.rating-3 { background: #ffc107; color: #1a1a1a; }
 .rating-4 { background: #20c997; }
 .rating-5 { background: #28a745; }
 
