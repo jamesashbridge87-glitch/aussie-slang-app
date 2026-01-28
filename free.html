@@ -1190,6 +1190,12 @@
                 // Play flip sound
                 playFlipSound();
 
+                // Hide the flip overlay, tap hint, speak bubble, and card glow
+                flipOverlay.classList.remove('show');
+                document.querySelector('.flashcard-front .tap-hint').style.display = 'none';
+                document.getElementById('speak-bubble').classList.add('hidden');
+                flashcard.classList.remove('glow');
+
                 // Flip the card
                 flashcard.classList.add('flipped');
                 flowState.flipped = true;
