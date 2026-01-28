@@ -276,16 +276,19 @@
             transform: scale(0.95);
         }
 
-        .tap-finger {
-            position: absolute;
-            bottom: 8px;
-            right: 60px;
-            width: 44px;
-            height: 44px;
-            pointer-events: none;
+        .tap-finger-wrap {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 24px;
+            margin-top: -8px;
         }
 
-        .tap-finger.hidden {
+        .tap-finger {
+            width: 64px;
+            height: 64px;
+        }
+
+        .tap-finger-wrap.hidden {
             display: none;
         }
 
@@ -953,7 +956,6 @@
                             <span class="example">"Don't stress about the exam, she'll be right"</span>
                             <span class="tap-hint">Tap to flip</span>
                             <button class="speak-btn" id="speak-btn" title="Hear pronunciation">🔈</button>
-                            <img src="images/tap-finger.gif" alt="" class="tap-finger" id="tap-finger">
                             <!-- Flip Overlay - appears after listening -->
                             <div class="flip-overlay" id="flip-overlay">
                                 <span class="flip-overlay-icon">👆</span>
@@ -967,6 +969,11 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Tap Finger GIF -->
+            <div class="tap-finger-wrap" id="tap-finger">
+                <img src="images/tap-finger.gif" alt="" class="tap-finger">
             </div>
 
             <!-- Voice Practice -->
