@@ -276,6 +276,19 @@
             transform: scale(0.95);
         }
 
+        .tap-finger {
+            position: absolute;
+            bottom: 8px;
+            right: 60px;
+            width: 44px;
+            height: 44px;
+            pointer-events: none;
+        }
+
+        .tap-finger.hidden {
+            display: none;
+        }
+
         /* ==========================================
            FLIP OVERLAY
            ========================================== */
@@ -940,6 +953,7 @@
                             <span class="example">"Don't stress about the exam, she'll be right"</span>
                             <span class="tap-hint">Tap to flip</span>
                             <button class="speak-btn" id="speak-btn" title="Hear pronunciation">🔈</button>
+                            <img src="images/tap-finger.gif" alt="" class="tap-finger" id="tap-finger">
                             <!-- Flip Overlay - appears after listening -->
                             <div class="flip-overlay" id="flip-overlay">
                                 <span class="flip-overlay-icon">👆</span>
@@ -1184,6 +1198,7 @@
 
             audioPlaying = true;
             speakBtn.classList.remove('pulse');
+            document.getElementById('tap-finger').classList.add('hidden');
             audioExample.currentTime = 0;
 
             audioExample.play().catch(() => {
