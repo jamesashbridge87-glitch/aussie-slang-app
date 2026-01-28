@@ -963,7 +963,6 @@
                         <div class="flashcard-back">
                             <span class="meaning">Everything will be okay</span>
                             <span class="example">Used to reassure someone that things will work out fine</span>
-                            <span class="tap-hint">Tap to flip back</span>
                         </div>
                     </div>
                 </div>
@@ -1158,12 +1157,16 @@
             }
         }
 
-        // Flashcard flip
+        // Flashcard flip - one time only from front side
+        let hasFlipped = false;
         flashcard.addEventListener('click', (e) => {
             if (e.target.closest('.speak-btn')) return;
+            if (hasFlipped) return;
 
-            // Only allow flip if not already flipped
+            // Only allow flip from front side
             if (!flashcard.classList.contains('flipped')) {
+                hasFlipped = true;
+
                 // Play flip sound
                 playFlipSound();
 
