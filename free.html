@@ -34,6 +34,7 @@
             --primary-dark: #e550a8;
             --secondary: #11E8F6;
             --accent-yellow: #FBFF22;
+            --heading-color: #D2FF42;
             --background: #111111;
             --card-bg: #1a1a1a;
             --text: #FFFFFF;
@@ -107,17 +108,18 @@
             letter-spacing: 1px;
         }
 
-        /* Flashcard */
+        /* Flashcard - matches main app exactly */
         .flashcard-container {
             perspective: 1000px;
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
 
         .flashcard {
             width: 100%;
-            height: 220px;
+            max-width: 500px;
+            height: 300px;
+            margin: 0 auto;
             cursor: pointer;
-            position: relative;
         }
 
         .flashcard-inner {
@@ -142,8 +144,9 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 25px;
+            padding: 30px;
             border-radius: var(--radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
             text-align: center;
         }
 
@@ -156,6 +159,7 @@
             background: var(--card-bg);
             transform: rotateY(180deg);
             border: 3px solid var(--secondary);
+            color: var(--text);
         }
 
         .difficulty-badge {
@@ -174,20 +178,24 @@
         .term {
             font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 10px;
         }
 
         .example {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-style: italic;
-            opacity: 0.9;
+            color: var(--text-light);
+        }
+
+        .flashcard-front .example {
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 15px;
         }
 
         .meaning {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: var(--secondary);
-            margin-bottom: 10px;
+            color: var(--heading-color);
+            margin-bottom: 15px;
         }
 
         .tap-hint {
@@ -514,15 +522,37 @@
             }
 
             .flashcard {
-                height: 200px;
+                min-height: 180px;
+                height: auto;
+                max-width: 100%;
+            }
+
+            .flashcard-front,
+            .flashcard-back {
+                position: relative;
+                min-height: 180px;
+                height: auto;
+                padding: 20px 15px;
+            }
+
+            .flashcard.flipped .flashcard-front {
+                display: none;
+            }
+
+            .flashcard.flipped .flashcard-back {
+                transform: none;
             }
 
             .term {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
 
             .meaning {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
+            }
+
+            .example {
+                font-size: 0.95rem;
             }
 
             .score-item {
