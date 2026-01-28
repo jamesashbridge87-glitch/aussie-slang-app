@@ -23,6 +23,10 @@
     <link rel="icon" type="image/png" href="images/logo-black.png">
 
     <style>
+        /* ==========================================
+           MOBILE-FIRST CSS - Base styles are mobile
+           ========================================== */
+
         * {
             margin: 0;
             padding: 0;
@@ -54,116 +58,125 @@
             background: var(--background);
             color: var(--text);
             min-height: 100vh;
-            line-height: 1.6;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior: none;
+            min-height: -webkit-fill-available;
+            line-height: 1.5;
+            overflow-x: hidden;
         }
 
+        /* ==========================================
+           CONTAINER - Mobile first
+           ========================================== */
         .container {
-            max-width: 600px;
+            width: 100%;
+            max-width: 500px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 16px;
         }
 
-        /* Hero Section */
+        /* ==========================================
+           HERO SECTION - Mobile first
+           ========================================== */
         .hero {
             text-align: center;
-            padding: 40px 0 30px;
+            padding: 24px 0 16px;
         }
 
         .logo {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 30px;
+            width: 56px;
+            height: 56px;
+            margin-bottom: 16px;
         }
 
         .headline {
-            font-size: 2rem;
+            font-size: 1.4rem;
             font-weight: 800;
             color: var(--primary);
-            line-height: 1.2;
-            margin-bottom: 20px;
+            line-height: 1.3;
+            margin-bottom: 12px;
+            padding: 0 8px;
         }
 
         .subheadline {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             color: var(--text-light);
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
 
         .try-prompt {
-            font-size: 1.6rem;
+            font-size: 1.25rem;
             color: var(--secondary);
             font-weight: 700;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
-        /* Demo Section */
+        /* ==========================================
+           FLASHCARD - Mobile first (no 3D on mobile)
+           ========================================== */
         .demo-section {
-            padding: 10px 0;
+            padding: 8px 0;
         }
 
-        /* Flashcard - matches main app exactly */
         .flashcard-container {
-            perspective: 1000px;
-            margin: 20px 0;
+            margin: 16px 0;
         }
 
         .flashcard {
             width: 100%;
-            max-width: 500px;
-            height: 300px;
-            margin: 0 auto;
+            min-height: 220px;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .flashcard-inner {
             position: relative;
             width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-        }
-
-        .flashcard.flipped .flashcard-inner {
-            transform: rotateY(180deg);
+            min-height: 220px;
         }
 
         .flashcard-front,
         .flashcard-back {
-            position: absolute;
             width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
+            min-height: 220px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 30px;
+            padding: 24px 16px;
             border-radius: var(--radius);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
             text-align: center;
+            position: relative;
         }
 
         .flashcard-front {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .flashcard-back {
             background: var(--card-bg);
-            transform: rotateY(180deg);
             border: 3px solid var(--secondary);
             color: var(--text);
+            display: none;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mobile: Simple show/hide for flip */
+        .flashcard.flipped .flashcard-front {
+            display: none;
+        }
+
+        .flashcard.flipped .flashcard-back {
+            display: flex;
         }
 
         .difficulty-badge {
             position: absolute;
             top: 12px;
             left: 12px;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             text-transform: uppercase;
             background: #4caf50;
@@ -171,32 +184,36 @@
         }
 
         .term {
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             font-weight: 700;
+            margin-bottom: 8px;
         }
 
         .example {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             font-style: italic;
             color: var(--text-light);
+            padding: 0 8px;
         }
 
         .flashcard-front .example {
             color: rgba(255, 255, 255, 0.9);
-            margin-top: 15px;
+            margin-top: 12px;
         }
 
         .meaning {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: var(--heading-color);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .tap-hint {
             position: absolute;
-            bottom: 15px;
-            font-size: 0.85rem;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
             color: rgba(255,255,255,0.7);
         }
 
@@ -206,420 +223,37 @@
 
         .speak-btn {
             position: absolute;
-            bottom: 15px;
-            right: 15px;
-            width: 44px;
-            height: 44px;
+            bottom: 12px;
+            right: 12px;
+            width: 48px;
+            height: 48px;
             border: none;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            font-size: 1.3rem;
+            background: rgba(255, 255, 255, 0.25);
+            font-size: 1.4rem;
             cursor: pointer;
-            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
-        .speak-btn:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(1.1);
+        .speak-btn:active {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(0.95);
         }
 
-        /* Voice Practice */
-        .voice-section {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .practice-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 28px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .practice-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .practice-btn.recording {
-            background: linear-gradient(135deg, #e53935, #d32f2f);
-            animation: pulse 1.5s ease infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
-            50% { box-shadow: 0 0 0 15px rgba(229, 57, 53, 0); }
-        }
-
-        .voice-target {
-            margin-top: 15px;
-            padding: 12px 20px;
-            background: rgba(102, 126, 234, 0.15);
-            border-radius: var(--radius);
-            border-left: 4px solid var(--primary);
-            font-size: 1rem;
-            color: var(--text);
-        }
-
-        .voice-target .highlight {
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        /* Results */
-        .results-section {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 25px;
-            margin-bottom: 30px;
-            display: none;
-        }
-
-        .results-section.show {
-            display: block;
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .score-item {
-            display: grid;
-            grid-template-columns: 130px 1fr 50px;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .score-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        .score-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .score-bar-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.8s ease;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
-
-        .score-value {
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-align: right;
-        }
-
-        .overall-result {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            padding: 20px;
-            background: rgba(102, 126, 234, 0.15);
-            border-radius: var(--radius);
-            margin-top: 20px;
-        }
-
-        .overall-label {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        .overall-score {
-            font-size: 2.2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Email Capture Section */
-        .capture-section {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 30px 25px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .capture-headline {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 20px;
-        }
-
-        .benefits-list {
-            text-align: left;
-            margin-bottom: 25px;
-        }
-
-        .benefit-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            font-size: 1rem;
-        }
-
-        .benefit-check {
-            color: var(--secondary);
-            font-size: 1.2rem;
-        }
-
-        .email-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .email-input {
-            padding: 16px 20px;
-            border: 2px solid #333;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            background: var(--background);
-            color: var(--text);
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .email-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .email-input::placeholder {
-            color: var(--text-light);
-        }
-
-        .trust-text {
-            margin-top: 15px;
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 20px 0 40px;
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        /* Sound Wave Animation */
-        .sound-wave-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            margin-top: 15px;
-        }
-
-        .sound-wave-container.show {
-            display: flex;
-        }
-
-        .sound-wave {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            height: 40px;
-        }
-
-        .sound-wave span {
-            width: 6px;
-            background: var(--primary);
-            border-radius: 3px;
-            animation: soundWave 1s ease-in-out infinite;
-        }
-
-        .sound-wave span:nth-child(1) { height: 15px; animation-delay: 0s; }
-        .sound-wave span:nth-child(2) { height: 25px; animation-delay: 0.1s; }
-        .sound-wave span:nth-child(3) { height: 35px; animation-delay: 0.2s; }
-        .sound-wave span:nth-child(4) { height: 25px; animation-delay: 0.3s; }
-        .sound-wave span:nth-child(5) { height: 15px; animation-delay: 0.4s; }
-
-        @keyframes soundWave {
-            0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
-            50% { transform: scaleY(1); opacity: 1; }
-        }
-
-        .listening-text {
-            margin-top: 10px;
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
-            }
-
-            .hero {
-                padding: 30px 0 20px;
-            }
-
-            .logo {
-                width: 60px;
-                height: 60px;
-                margin-bottom: 20px;
-            }
-
-            .headline {
-                font-size: 1.5rem;
-                padding: 0 5px;
-            }
-
-            .subheadline {
-                font-size: 1rem;
-            }
-
-            .try-prompt {
-                font-size: 1.4rem;
-            }
-
-            .flashcard {
-                min-height: 200px;
-                height: auto;
-                max-width: 100%;
-            }
-
-            .flashcard-front,
-            .flashcard-back {
-                position: relative;
-                min-height: 200px;
-                height: auto;
-                padding: 25px 15px;
-            }
-
-            .flashcard.flipped .flashcard-front {
-                display: none;
-            }
-
-            .flashcard.flipped .flashcard-back {
-                transform: none;
-            }
-
-            .term {
-                font-size: 1.6rem;
-            }
-
-            .meaning {
-                font-size: 1.1rem;
-            }
-
-            .example {
-                font-size: 0.9rem;
-            }
-
-            .practice-btn {
-                padding: 16px 24px;
-                font-size: 1rem;
-                width: 100%;
-                justify-content: center;
-            }
-
-            .voice-target {
-                font-size: 0.95rem;
-                padding: 15px;
-            }
-
-            .score-item {
-                grid-template-columns: 100px 1fr 45px;
-                gap: 8px;
-            }
-
-            .score-label {
-                font-size: 0.75rem;
-            }
-
-            .results-section {
-                padding: 20px 15px;
-            }
-
-            .overall-result {
-                flex-direction: column;
-                gap: 8px;
-                padding: 15px;
-            }
-
-            .overall-score {
-                font-size: 2rem;
-            }
-
-            .capture-section {
-                padding: 25px 20px;
-            }
-
-            .capture-headline {
-                font-size: 1.25rem;
-            }
-
-            .benefit-item {
-                font-size: 0.9rem;
-            }
-
-            .email-input {
-                padding: 14px 16px;
-                font-size: 16px; /* Prevents iOS zoom */
-            }
-
-            .submit-btn {
-                font-size: 1.1rem;
-                padding: 16px 25px;
-            }
-
-            .trust-text {
-                font-size: 0.8rem;
-            }
-        }
-
-        /* Touch-friendly tap targets */
-        @media (hover: none) and (pointer: coarse) {
-            .speak-btn,
-            .practice-btn,
-            .submit-btn {
-                min-height: 48px;
-            }
-
-            .flashcard {
-                -webkit-tap-highlight-color: transparent;
-            }
-        }
-
-        /* Tap to Flip Overlay */
+        /* ==========================================
+           FLIP OVERLAY
+           ========================================== */
         .flip-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             display: none;
             flex-direction: column;
             align-items: center;
@@ -633,30 +267,315 @@
             display: flex;
         }
 
+        .flip-overlay-icon {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            animation: tapIcon 1s ease-in-out infinite;
+        }
+
         .flip-overlay-text {
             color: var(--accent-yellow);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             animation: bounceText 1s ease-in-out infinite;
         }
 
-        .flip-overlay-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            animation: tapIcon 1s ease-in-out infinite;
-        }
-
         @keyframes bounceText {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+            50% { transform: translateY(-4px); }
         }
 
         @keyframes tapIcon {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.15); }
         }
 
-        /* Speaker Button Pulse - VERY VISIBLE */
+        /* ==========================================
+           VOICE PRACTICE SECTION
+           ========================================== */
+        .voice-section {
+            text-align: center;
+            padding: 16px 0;
+        }
+
+        .practice-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            min-height: 52px;
+        }
+
+        .practice-btn:active {
+            transform: scale(0.98);
+        }
+
+        .practice-btn.recording {
+            background: linear-gradient(135deg, #e53935, #d32f2f);
+            animation: pulse 1.5s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(229, 57, 53, 0); }
+        }
+
+        .voice-target {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: rgba(102, 126, 234, 0.15);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary);
+            font-size: 0.95rem;
+            color: var(--text);
+            text-align: left;
+        }
+
+        .voice-target .highlight {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Sound Wave */
+        .sound-wave-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .sound-wave-container.show {
+            display: flex;
+        }
+
+        .sound-wave {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            height: 36px;
+        }
+
+        .sound-wave span {
+            width: 5px;
+            background: var(--primary);
+            border-radius: 3px;
+            animation: soundWave 1s ease-in-out infinite;
+        }
+
+        .sound-wave span:nth-child(1) { height: 12px; animation-delay: 0s; }
+        .sound-wave span:nth-child(2) { height: 20px; animation-delay: 0.1s; }
+        .sound-wave span:nth-child(3) { height: 28px; animation-delay: 0.2s; }
+        .sound-wave span:nth-child(4) { height: 20px; animation-delay: 0.3s; }
+        .sound-wave span:nth-child(5) { height: 12px; animation-delay: 0.4s; }
+
+        @keyframes soundWave {
+            0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+            50% { transform: scaleY(1); opacity: 1; }
+        }
+
+        .listening-text {
+            margin-top: 8px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        /* ==========================================
+           RESULTS SECTION
+           ========================================== */
+        .results-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px 16px;
+            margin: 16px 0;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score-item {
+            display: grid;
+            grid-template-columns: 90px 1fr 40px;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .score-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.8s ease;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .score-value {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .overall-result {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 16px;
+            background: rgba(102, 126, 234, 0.15);
+            border-radius: var(--radius);
+            margin-top: 16px;
+        }
+
+        .overall-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .overall-score {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ==========================================
+           EMAIL CAPTURE SECTION
+           ========================================== */
+        .capture-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px 16px;
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        .capture-headline {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .benefits-list {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .benefit-check {
+            color: var(--secondary);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .email-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .email-input {
+            padding: 14px 16px;
+            border: 2px solid #333;
+            border-radius: var(--radius);
+            font-size: 16px; /* Prevents iOS zoom */
+            background: var(--background);
+            color: var(--text);
+            text-align: center;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .email-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .submit-btn {
+            padding: 16px 24px;
+            background: var(--accent-yellow);
+            color: #111111;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            min-height: 52px;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+            background: #e6e81f;
+        }
+
+        .trust-text {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* ==========================================
+           FOOTER
+           ========================================== */
+        .footer {
+            text-align: center;
+            padding: 20px 0 32px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        /* ==========================================
+           ANIMATIONS - Speaker pulse
+           ========================================== */
         .speak-btn.pulse {
             animation: speakerPulse 1.2s ease-in-out infinite;
             background: rgba(255, 255, 255, 0.4);
@@ -668,30 +587,30 @@
                 box-shadow: 0 0 0 0 rgba(251, 255, 34, 0.7);
             }
             50% {
-                transform: scale(1.15);
-                box-shadow: 0 0 0 15px rgba(251, 255, 34, 0);
+                transform: scale(1.1);
+                box-shadow: 0 0 0 12px rgba(251, 255, 34, 0);
             }
         }
 
-        /* Card Glow - STRONGER */
-        .flashcard.glow .flashcard-inner {
-            box-shadow: 0 0 30px var(--secondary), 0 0 60px rgba(17, 232, 246, 0.3), 0 10px 25px rgba(0, 0, 0, 0.4);
+        /* Card Glow */
+        .flashcard.glow .flashcard-front {
+            box-shadow: 0 0 25px var(--secondary), 0 8px 20px rgba(0, 0, 0, 0.3);
             animation: cardGlow 1.5s ease-in-out infinite;
         }
 
         @keyframes cardGlow {
             0%, 100% {
-                box-shadow: 0 0 20px var(--secondary), 0 0 40px rgba(17, 232, 246, 0.2), 0 10px 25px rgba(0, 0, 0, 0.4);
+                box-shadow: 0 0 15px var(--secondary), 0 8px 20px rgba(0, 0, 0, 0.3);
             }
             50% {
-                box-shadow: 0 0 40px var(--secondary), 0 0 80px rgba(17, 232, 246, 0.4), 0 10px 25px rgba(0, 0, 0, 0.4);
+                box-shadow: 0 0 35px var(--secondary), 0 8px 20px rgba(0, 0, 0, 0.3);
             }
         }
 
         /* Practice Button States */
         .practice-btn.dimmed {
             opacity: 0.5;
-            filter: grayscale(50%);
+            filter: grayscale(40%);
         }
 
         .practice-btn.pulse:not(.recording) {
@@ -701,42 +620,173 @@
         @keyframes practicePulse {
             0%, 100% {
                 transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.6);
             }
             50% {
-                transform: scale(1.05);
-                box-shadow: 0 0 0 15px rgba(102, 126, 234, 0);
+                transform: scale(1.02);
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
             }
         }
 
-        /* Yellow CTA Button */
-        .submit-btn {
-            padding: 18px 30px;
-            background: var(--accent-yellow);
-            color: #111111;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .submit-btn:hover {
-            background: #e6e81f;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(251, 255, 34, 0.3);
-        }
-
-        /* CTA Shake Animation */
+        /* CTA Shake */
         @keyframes ctaShake {
             0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+            20%, 40%, 60%, 80% { transform: translateX(4px); }
         }
 
         .submit-btn.shake {
             animation: ctaShake 0.6s ease-in-out;
+        }
+
+        /* ==========================================
+           DESKTOP ENHANCEMENTS (min-width: 600px)
+           ========================================== */
+        @media (min-width: 600px) {
+            .container {
+                padding: 24px;
+            }
+
+            .hero {
+                padding: 40px 0 24px;
+            }
+
+            .logo {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 24px;
+            }
+
+            .headline {
+                font-size: 2rem;
+                padding: 0;
+            }
+
+            .subheadline {
+                font-size: 1.1rem;
+            }
+
+            .try-prompt {
+                font-size: 1.5rem;
+            }
+
+            /* Desktop: Enable 3D flip */
+            .flashcard-container {
+                perspective: 1000px;
+            }
+
+            .flashcard {
+                height: 280px;
+                min-height: auto;
+            }
+
+            .flashcard-inner {
+                height: 100%;
+                transition: transform 0.6s;
+                transform-style: preserve-3d;
+            }
+
+            .flashcard.flipped .flashcard-inner {
+                transform: rotateY(180deg);
+            }
+
+            .flashcard-front,
+            .flashcard-back {
+                position: absolute;
+                height: 100%;
+                min-height: auto;
+                backface-visibility: hidden;
+                padding: 30px;
+            }
+
+            .flashcard-back {
+                transform: rotateY(180deg);
+                display: flex;
+            }
+
+            .flashcard.flipped .flashcard-front {
+                display: flex;
+            }
+
+            .flashcard.flipped .flashcard-back {
+                display: flex;
+            }
+
+            .term {
+                font-size: 2.2rem;
+            }
+
+            .meaning {
+                font-size: 1.4rem;
+            }
+
+            .example {
+                font-size: 1rem;
+            }
+
+            .practice-btn {
+                width: auto;
+                padding: 14px 32px;
+                font-size: 1.1rem;
+            }
+
+            .practice-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            }
+
+            .score-item {
+                grid-template-columns: 120px 1fr 50px;
+                gap: 12px;
+            }
+
+            .score-label {
+                font-size: 0.85rem;
+            }
+
+            .score-bar {
+                height: 8px;
+            }
+
+            .score-value {
+                font-size: 0.9rem;
+            }
+
+            .overall-result {
+                flex-direction: row;
+                gap: 16px;
+            }
+
+            .overall-score {
+                font-size: 2.2rem;
+            }
+
+            .capture-section {
+                padding: 32px;
+            }
+
+            .capture-headline {
+                font-size: 1.5rem;
+            }
+
+            .benefit-item {
+                font-size: 1rem;
+            }
+
+            .submit-btn {
+                font-size: 1.2rem;
+                padding: 18px 30px;
+            }
+
+            .submit-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(251, 255, 34, 0.3);
+            }
+
+            .speak-btn:hover {
+                background: rgba(255, 255, 255, 0.4);
+                transform: scale(1.1);
+            }
         }
     </style>
 </head>
@@ -892,6 +942,7 @@
 
         // Audio
         const audioExample = new Audio('audio/shes-right-example.mp3');
+        let audioPlaying = false;
 
         // Initialize guided flow
         function initGuidedFlow() {
@@ -901,14 +952,14 @@
 
         // Update visual states - simplified, no progress indicators
         function updateVisualStates() {
-            // Speaker button pulse
-            if (!flowState.listened) {
+            // Speaker button pulse (only when not listened AND not currently playing)
+            if (!flowState.listened && !audioPlaying) {
                 speakBtn.classList.add('pulse');
             } else {
                 speakBtn.classList.remove('pulse');
             }
 
-            // Card glow and flip overlay
+            // Card glow and flip overlay - only show AFTER audio finishes
             if (flowState.listened && !flowState.flipped) {
                 flashcard.classList.add('glow');
                 flipOverlay.classList.add('show');
@@ -940,22 +991,40 @@
             }
         });
 
-        // Speak button
-        speakBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            audioExample.currentTime = 0;
-            audioExample.play().catch(() => {
-                // Fallback to TTS if audio fails
-                const utterance = new SpeechSynthesisUtterance("Don't stress about the exam, she'll be right");
-                utterance.lang = 'en-AU';
-                utterance.rate = 0.9;
-                speechSynthesis.speak(utterance);
-            });
-
+        // Audio ended event - trigger flip overlay AFTER audio finishes
+        audioExample.addEventListener('ended', () => {
+            audioPlaying = false;
             if (!flowState.listened) {
                 flowState.listened = true;
                 updateVisualStates();
             }
+        });
+
+        // Speak button
+        speakBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            // Don't restart if already playing
+            if (audioPlaying) return;
+
+            audioPlaying = true;
+            speakBtn.classList.remove('pulse');
+            audioExample.currentTime = 0;
+
+            audioExample.play().catch(() => {
+                // Fallback to TTS if audio fails
+                audioPlaying = false;
+                const utterance = new SpeechSynthesisUtterance("Don't stress about the exam, she'll be right");
+                utterance.lang = 'en-AU';
+                utterance.rate = 0.9;
+                utterance.onend = () => {
+                    if (!flowState.listened) {
+                        flowState.listened = true;
+                        updateVisualStates();
+                    }
+                };
+                speechSynthesis.speak(utterance);
+            });
         });
 
         // Voice Practice
