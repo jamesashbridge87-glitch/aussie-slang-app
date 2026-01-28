@@ -12,38 +12,42 @@ const Speech = {
 
     setupEventListeners() {
         // Flashcard mode speak buttons
-        document.getElementById('speak-term').addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent card flip
-            const card = this.getCurrentFlashcard();
-            if (card) {
-                this.playAudio(card.id, 'term', card.term, e.target);
-            }
-        });
+        const speakTermBtn = document.getElementById('speak-term');
+        if (speakTermBtn) {
+            speakTermBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent card flip
+                const card = this.getCurrentFlashcard();
+                if (card) {
+                    // Use example audio for terms - sounds more natural than isolated words
+                    this.playAudio(card.id, 'example', card.example, e.target);
+                }
+            });
+        }
 
-        document.getElementById('speak-example').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const card = this.getCurrentFlashcard();
-            if (card) {
-                this.playAudio(card.id, 'example', card.example, e.target);
-            }
-        });
 
         // Review mode speak buttons
-        document.getElementById('speak-review-term').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const card = this.getCurrentReviewCard();
-            if (card) {
-                this.playAudio(card.id, 'term', card.term, e.target);
-            }
-        });
+        const speakReviewTermBtn = document.getElementById('speak-review-term');
+        if (speakReviewTermBtn) {
+            speakReviewTermBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const card = this.getCurrentReviewCard();
+                if (card) {
+                    // Use example audio for terms - sounds more natural than isolated words
+                    this.playAudio(card.id, 'example', card.example, e.target);
+                }
+            });
+        }
 
-        document.getElementById('speak-review-example').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const card = this.getCurrentReviewCard();
-            if (card) {
-                this.playAudio(card.id, 'example', card.example, e.target);
-            }
-        });
+        const speakReviewExampleBtn = document.getElementById('speak-review-example');
+        if (speakReviewExampleBtn) {
+            speakReviewExampleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const card = this.getCurrentReviewCard();
+                if (card) {
+                    this.playAudio(card.id, 'example', card.example, e.target);
+                }
+            });
+        }
     },
 
     // Get current flashcard from FlashcardMode
@@ -56,8 +60,8 @@ const Speech = {
 
     // Get current review card from SRS
     getCurrentReviewCard() {
-        if (typeof SRS !== 'undefined' && SRS.currentCard) {
-            return SRS.currentCard;
+        if (typeof SRSMode !== 'undefined' && SRSMode.currentCard) {
+            return SRSMode.currentCard;
         }
         return null;
     },

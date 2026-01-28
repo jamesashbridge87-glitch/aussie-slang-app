@@ -50,7 +50,7 @@ const FillBlankMode = {
         this.questions = this.shuffleArray(availableTerms).slice(0, this.totalQuestions);
 
         if (this.questions.length < 5) {
-            Gamification.showNotification('Not enough terms for this difficulty!');
+            Gamification.showNotification('Not enough terms for that level, mate!');
             return;
         }
 
@@ -102,7 +102,7 @@ const FillBlankMode = {
         const userAnswer = input.value.trim();
 
         if (!userAnswer) {
-            Gamification.showNotification('Type your answer first!');
+            Gamification.showNotification('Give it a go first, mate!');
             return;
         }
 
@@ -122,13 +122,13 @@ const FillBlankMode = {
             this.score++;
             document.getElementById('fillblank-score').textContent = this.score;
             input.classList.add('correct');
-            feedbackText.textContent = "Correct! Well done!";
+            feedbackText.textContent = "Spot on, legend!";
             feedback.className = 'fillblank-feedback correct';
             SoundEffects.play('correct');
             Gamification.recordQuizCorrect();
         } else {
             input.classList.add('incorrect');
-            feedbackText.innerHTML = `Not quite! The answer was: <strong>${question.term}</strong>`;
+            feedbackText.innerHTML = `Close! It was: <strong>${question.term}</strong>`;
             feedback.className = 'fillblank-feedback incorrect';
             SoundEffects.play('incorrect');
         }
@@ -204,15 +204,15 @@ const FillBlankMode = {
         const message = document.getElementById('fillblank-results-message');
 
         if (percentage === 100) {
-            message.textContent = "Strewth! Perfect score! You're a true Aussie!";
+            message.textContent = "You absolute legend! Perfect score! 🏆";
         } else if (percentage >= 80) {
-            message.textContent = "Ripper! You really know your slang!";
+            message.textContent = "Ripper effort! You're getting the hang of it!";
         } else if (percentage >= 60) {
-            message.textContent = "Not bad, mate! Keep at it!";
+            message.textContent = "Good on ya, mate! Keep at it!";
         } else if (percentage >= 40) {
-            message.textContent = "She'll be right! Practice makes perfect!";
+            message.textContent = "No worries! Have another crack at it!";
         } else {
-            message.textContent = "No worries! Give it another burl!";
+            message.textContent = "She'll be right! Practice makes perfect, mate!";
         }
 
         // Record completion

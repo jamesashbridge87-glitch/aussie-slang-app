@@ -3,6 +3,26 @@ const SoundEffects = {
     audioContext: null,
     enabled: true,
 
+    // Safe localStorage helpers (prevents crashes in private browsing)
+    safeGetItem(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+            return null;
+        }
+    },
+
+    safeSetItem(key, value) {
+        try {
+            localStorage.setItem(key, value);
+            return true;
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+            return false;
+        }
+    },
+
     init() {
         // Create audio context on first user interaction
         document.addEventListener('click', () => {
@@ -12,13 +32,13 @@ const SoundEffects = {
         }, { once: true });
 
         // Load saved preference
-        const saved = localStorage.getItem('aussie_slang_sound');
+        const saved = this.safeGetItem('your_aussie_uncle_sound');
         this.enabled = saved !== 'false';
     },
 
     toggle() {
         this.enabled = !this.enabled;
-        localStorage.setItem('aussie_slang_sound', this.enabled);
+        this.safeSetItem('your_aussie_uncle_sound', this.enabled);
         return this.enabled;
     },
 

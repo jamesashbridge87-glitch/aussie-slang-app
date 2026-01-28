@@ -2,10 +2,40 @@
 // Based on a simplified SM-2 algorithm
 
 const SRSMode = {
-    STORAGE_KEY: 'aussie_slang_srs',
+    STORAGE_KEY: 'your_aussie_uncle_srs',
     reviewQueue: [],
     currentCard: null,
     isFlipped: false,
+
+    // Safe localStorage helpers (prevents crashes in private browsing)
+    safeGetItem(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+            return null;
+        }
+    },
+
+    safeSetItem(key, value) {
+        try {
+            localStorage.setItem(key, value);
+            return true;
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+            return false;
+        }
+    },
+
+    safeRemoveItem(key) {
+        try {
+            localStorage.removeItem(key);
+            return true;
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+            return false;
+        }
+    },
 
     // Default card state
     defaultCardState: {
@@ -55,24 +85,32 @@ const SRSMode = {
     },
 
     loadProgress() {
-        const stored = localStorage.getItem(this.STORAGE_KEY);
+        const stored = this.safeGetItem(this.STORAGE_KEY);
         if (stored) {
-            this.cardStates = JSON.parse(stored);
+            try {
+                this.cardStates = JSON.parse(stored);
+            } catch (e) {
+                console.warn('Failed to parse SRS progress:', e.message);
+                this.cardStates = {};
+            }
         } else {
-            // Initialize all cards with default state
             this.cardStates = {};
-            slangData.forEach(card => {
+        }
+
+        // Initialize any missing cards with default state
+        slangData.forEach(card => {
+            if (!this.cardStates[card.id]) {
                 this.cardStates[card.id] = {
                     ...this.defaultCardState,
                     nextReview: new Date().toISOString()
                 };
-            });
-            this.saveProgress();
-        }
+            }
+        });
+        this.saveProgress();
     },
 
     saveProgress() {
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.cardStates));
+        this.safeSetItem(this.STORAGE_KEY, JSON.stringify(this.cardStates));
     },
 
     updateStats() {
@@ -100,10 +138,10 @@ const SRSMode = {
         // Update start button state
         const startBtn = document.getElementById('start-review');
         if (dueToday === 0) {
-            startBtn.textContent = 'No Cards Due';
+            startBtn.textContent = 'All caught up, legend!';
             startBtn.disabled = true;
         } else {
-            startBtn.textContent = `Start Review (${dueToday})`;
+            startBtn.textContent = `Let's review (${dueToday})`;
             startBtn.disabled = false;
         }
     },
@@ -120,7 +158,7 @@ const SRSMode = {
         this.reviewQueue = this.getCardsForReview();
 
         if (this.reviewQueue.length === 0) {
-            alert('No cards due for review! Come back later.');
+            Gamification.showNotification('No cards due right now, mate! Come back later.');
             return;
         }
 
@@ -152,7 +190,7 @@ const SRSMode = {
         document.getElementById('review-flashcard').classList.remove('flipped');
         document.getElementById('rating-buttons').classList.add('hidden');
         document.getElementById('flip-review').classList.remove('hidden');
-        document.getElementById('flip-review').textContent = 'Show Answer';
+        document.getElementById('flip-review').textContent = 'Show me the answer';
 
         // Update card content
         document.getElementById('review-term').textContent = this.currentCard.term;
@@ -210,11 +248,12 @@ const SRSMode = {
     },
 
     resetProgress() {
-        if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
-            localStorage.removeItem(this.STORAGE_KEY);
+        if (confirm('You sure you want to start fresh, mate? All your progress will be gone!')) {
+            this.safeRemoveItem(this.STORAGE_KEY);
             this.loadProgress();
             this.updateStats();
             this.showScreen('review-stats');
+            Gamification.showNotification('All reset! Fresh start, legend!');
         }
     },
 
