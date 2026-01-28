@@ -6,7 +6,32 @@ const App = {
         this.setupModeSelector();
         this.setupBadgesButton();
         this.setupSoundToggle();
+        this.setupCourseCTAShake();
         this.initializeModules();
+    },
+
+    setupCourseCTAShake() {
+        const ctaLink = document.querySelector('.course-cta-link');
+        if (!ctaLink) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Small delay so they see it before it shakes
+                    setTimeout(() => {
+                        ctaLink.classList.add('shake');
+                        // Remove class after animation so it can shake again if needed
+                        setTimeout(() => {
+                            ctaLink.classList.remove('shake');
+                        }, 600);
+                    }, 300);
+                    // Only shake once
+                    observer.unobserve(ctaLink);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(ctaLink);
     },
 
     setupBadgesButton() {
