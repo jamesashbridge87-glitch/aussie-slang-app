@@ -948,13 +948,16 @@
         const audioExample = new Audio('audio/shes-right-example.mp3');
         let audioPlaying = false;
 
-        // Flip sound
+        // Flip sound - preload for instant playback
         const flipSound = new Audio('audio/flip-sound.mp3');
         flipSound.volume = 0.6;
+        flipSound.preload = 'auto';
 
         function playFlipSound() {
-            flipSound.currentTime = 0;
-            flipSound.play().catch(() => {});
+            // Clone and play for instant sync with animation
+            const sound = flipSound.cloneNode();
+            sound.volume = 0.6;
+            sound.play().catch(() => {});
         }
 
         // Initialize guided flow
@@ -1159,11 +1162,11 @@
             const hasKeyPhrase = spokenWords.some(w => w.includes('she') || w.includes('shell')) &&
                                  spokenWords.includes('be') && spokenWords.includes('right');
 
-            const accuracy = Math.min(100, Math.round((matchedWords / targetWords.length) * 100) + Math.random() * 10);
-            const confidence = Math.min(100, Math.round(70 + Math.random() * 25));
+            const accuracy = Math.round(Math.min(100, (matchedWords / targetWords.length) * 100 + Math.random() * 10));
+            const confidence = Math.round(Math.min(100, 70 + Math.random() * 25));
             const slangRecognition = hasKeyPhrase ?
                 Math.round(85 + Math.random() * 15) : Math.round(40 + Math.random() * 30);
-            const fluency = Math.min(100, Math.round(65 + Math.random() * 30));
+            const fluency = Math.round(Math.min(100, 65 + Math.random() * 30));
             const overall = Math.round((accuracy + confidence + slangRecognition + fluency) / 4);
 
             // Show results
@@ -1177,23 +1180,28 @@
                 document.getElementById('overall-score').textContent = overall + '%';
             }, 100);
 
-            // Let user see their results for 2 seconds, then auto-scroll to CTA
+            // Step 1: Scroll to show results (half scroll)
             setTimeout(() => {
-                captureSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-                // Shake CTA button after scroll completes
-                if (!flowState.ctaShaken) {
-                    setTimeout(() => {
-                        submitBtn.classList.add('shake');
-                        flowState.ctaShaken = true;
+                // Step 2: After 2 seconds viewing results, scroll to CTA
+                setTimeout(() => {
+                    captureSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-                        // Remove shake class after animation
+                    // Step 3: Shake CTA button after scroll completes
+                    if (!flowState.ctaShaken) {
                         setTimeout(() => {
-                            submitBtn.classList.remove('shake');
-                        }, 600);
-                    }, 500);
-                }
-            }, 2000);
+                            submitBtn.classList.add('shake');
+                            flowState.ctaShaken = true;
+
+                            // Remove shake class after animation
+                            setTimeout(() => {
+                                submitBtn.classList.remove('shake');
+                            }, 600);
+                        }, 500);
+                    }
+                }, 2000);
+            }, 500);
         }
 
         function animateScore(id, value) {
