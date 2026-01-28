@@ -612,79 +612,6 @@
             }
         }
 
-        /* Progress Indicator */
-        .progress-steps {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-
-        .progress-step {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
-            color: var(--text-light);
-            transition: var(--transition);
-        }
-
-        .progress-step.active {
-            color: var(--text);
-        }
-
-        .progress-step.completed {
-            color: var(--secondary);
-        }
-
-        .progress-step .step-icon {
-            font-size: 1rem;
-        }
-
-        .progress-step.active .step-icon {
-            animation: gentlePulse 2s ease-in-out infinite;
-        }
-
-        @media (max-width: 600px) {
-            .progress-steps {
-                gap: 15px;
-            }
-            .progress-step {
-                font-size: 0.8rem;
-            }
-            .progress-step .step-label {
-                display: none;
-            }
-        }
-
-        /* Guided Hint - Above card */
-        .guided-hint {
-            text-align: center;
-            font-size: 1.1rem;
-            color: var(--accent-yellow);
-            font-weight: 600;
-            margin-bottom: 10px;
-            padding: 10px 20px;
-            background: rgba(251, 255, 34, 0.15);
-            border-radius: var(--radius);
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .guided-hint:empty {
-            display: none;
-        }
-
-        @media (max-width: 600px) {
-            .guided-hint {
-                font-size: 1rem;
-                padding: 8px 15px;
-            }
-        }
-
         /* Tap to Flip Overlay */
         .flip-overlay {
             position: absolute;
@@ -729,21 +656,6 @@
             50% { transform: scale(1.2); }
         }
 
-        /* Progress step active state - more visible */
-        .progress-step.active {
-            color: var(--accent-yellow);
-            font-weight: 700;
-        }
-
-        .progress-step.active .step-icon {
-            animation: bounceIcon 1s ease-in-out infinite;
-        }
-
-        @keyframes bounceIcon {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
         /* Speaker Button Pulse - VERY VISIBLE */
         .speak-btn.pulse {
             animation: speakerPulse 1.2s ease-in-out infinite;
@@ -759,28 +671,6 @@
                 transform: scale(1.15);
                 box-shadow: 0 0 0 15px rgba(251, 255, 34, 0);
             }
-        }
-
-        /* Start Here Arrow */
-        .start-arrow {
-            position: absolute;
-            bottom: 15px;
-            right: 65px;
-            color: var(--accent-yellow);
-            font-size: 0.9rem;
-            font-weight: 700;
-            animation: pointArrow 1s ease-in-out infinite;
-            pointer-events: none;
-            white-space: nowrap;
-        }
-
-        @keyframes pointArrow {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(5px); }
-        }
-
-        .start-arrow.hidden {
-            display: none;
         }
 
         /* Card Glow - STRONGER */
@@ -862,25 +752,6 @@
 
         <!-- Demo Section -->
         <section class="demo-section">
-            <!-- Progress Steps -->
-            <div class="progress-steps" id="progress-steps">
-                <div class="progress-step active" id="step-listen">
-                    <span class="step-icon">🔈</span>
-                    <span class="step-label">Listen</span>
-                </div>
-                <div class="progress-step" id="step-flip">
-                    <span class="step-icon">👆</span>
-                    <span class="step-label">Flip</span>
-                </div>
-                <div class="progress-step" id="step-speak">
-                    <span class="step-icon">🎤</span>
-                    <span class="step-label">Speak</span>
-                </div>
-            </div>
-
-            <!-- Guided Hint - positioned above card -->
-            <p class="guided-hint" id="guided-hint"></p>
-
             <!-- Flashcard -->
             <div class="flashcard-container">
                 <div class="flashcard" id="demo-flashcard">
@@ -890,7 +761,6 @@
                             <span class="term">She'll be right</span>
                             <span class="example">"Don't stress about the exam, she'll be right"</span>
                             <span class="tap-hint">Tap to flip</span>
-                            <span class="start-arrow" id="start-arrow">Start here! 👉</span>
                             <button class="speak-btn" id="speak-btn" title="Hear pronunciation">🔈</button>
                             <!-- Flip Overlay - appears after listening -->
                             <div class="flip-overlay" id="flip-overlay">
@@ -1013,19 +883,12 @@
         // DOM Elements
         const flashcard = document.getElementById('demo-flashcard');
         const speakBtn = document.getElementById('speak-btn');
-        const startArrow = document.getElementById('start-arrow');
         const flipOverlay = document.getElementById('flip-overlay');
         const practiceBtn = document.getElementById('practice-btn');
         const soundWave = document.getElementById('sound-wave');
         const resultsSection = document.getElementById('results-section');
-        const guidedHint = document.getElementById('guided-hint');
         const captureSection = document.querySelector('.capture-section');
         const submitBtn = document.querySelector('.submit-btn');
-
-        // Progress step elements
-        const stepListen = document.getElementById('step-listen');
-        const stepFlip = document.getElementById('step-flip');
-        const stepSpeak = document.getElementById('step-speak');
 
         // Audio
         const audioExample = new Audio('audio/shes-right-example.mp3');
@@ -1036,56 +899,13 @@
             practiceBtn.classList.add('dimmed');
         }
 
-        // Update progress UI
-        function updateProgress() {
-            // Listen step
-            if (flowState.listened) {
-                stepListen.classList.remove('active');
-                stepListen.classList.add('completed');
-                stepListen.querySelector('.step-icon').textContent = '✓';
-            }
-
-            // Flip step
-            if (flowState.flipped) {
-                stepFlip.classList.remove('active');
-                stepFlip.classList.add('completed');
-                stepFlip.querySelector('.step-icon').textContent = '✓';
-            } else if (flowState.listened) {
-                stepFlip.classList.add('active');
-            }
-
-            // Speak step
-            if (flowState.practiced) {
-                stepSpeak.classList.remove('active');
-                stepSpeak.classList.add('completed');
-                stepSpeak.querySelector('.step-icon').textContent = '✓';
-            } else if (flowState.listened || flowState.flipped) {
-                stepSpeak.classList.add('active');
-            }
-        }
-
-        // Update hint text
-        function updateHint() {
-            if (!flowState.listened) {
-                guidedHint.textContent = 'Tap 🔈 to hear it';
-            } else if (!flowState.flipped) {
-                guidedHint.textContent = 'Now tap the card to see what it means';
-            } else if (!flowState.practiced) {
-                guidedHint.textContent = 'Your turn! Tap to practice saying it';
-            } else {
-                guidedHint.textContent = '';
-            }
-        }
-
-        // Update visual states
+        // Update visual states - simplified, no progress indicators
         function updateVisualStates() {
-            // Speaker button pulse and arrow
+            // Speaker button pulse
             if (!flowState.listened) {
                 speakBtn.classList.add('pulse');
-                startArrow.classList.remove('hidden');
             } else {
                 speakBtn.classList.remove('pulse');
-                startArrow.classList.add('hidden');
             }
 
             // Card glow and flip overlay
@@ -1116,8 +936,6 @@
 
             if (!flowState.flipped) {
                 flowState.flipped = true;
-                updateProgress();
-                updateHint();
                 updateVisualStates();
             }
         });
@@ -1136,8 +954,6 @@
 
             if (!flowState.listened) {
                 flowState.listened = true;
-                updateProgress();
-                updateHint();
                 updateVisualStates();
             }
         });
@@ -1232,8 +1048,6 @@
             // Mark practiced
             if (!flowState.practiced) {
                 flowState.practiced = true;
-                updateProgress();
-                updateHint();
                 updateVisualStates();
             }
 
