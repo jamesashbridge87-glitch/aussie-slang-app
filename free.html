@@ -151,6 +151,8 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transform-origin: center;
+            transition: transform 0.15s ease-out, opacity 0.15s ease-out;
         }
 
         .flashcard-back {
@@ -159,15 +161,31 @@
             color: var(--text);
             display: none;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transform-origin: center;
+            transition: transform 0.15s ease-out, opacity 0.15s ease-out;
         }
 
-        /* Mobile: Simple show/hide for flip */
+        /* Mobile: Flip animation */
+        .flashcard.flipping .flashcard-front {
+            transform: scaleX(0);
+        }
+
         .flashcard.flipped .flashcard-front {
             display: none;
         }
 
         .flashcard.flipped .flashcard-back {
             display: flex;
+            animation: flipIn 0.2s ease-out;
+        }
+
+        .flashcard.flipping-back .flashcard-back {
+            transform: scaleX(0);
+        }
+
+        @keyframes flipIn {
+            0% { transform: scaleX(0); }
+            100% { transform: scaleX(1); }
         }
 
         .difficulty-badge {
@@ -944,6 +962,32 @@
         const audioExample = new Audio('audio/shes-right-example.mp3');
         let audioPlaying = false;
 
+        // Create flip sound using Web Audio API
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playFlipSound() {
+            // Resume audio context if suspended (required by browsers)
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            // Create a short "whoosh" flip sound
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
         // Initialize guided flow
         function initGuidedFlow() {
             speakBtn.classList.add('pulse');
@@ -985,16 +1029,30 @@
             if (e.target.closest('.speak-btn')) return;
 
             // Only allow flip if not already flipped (one-way on landing page)
-            if (!flashcard.classList.contains('flipped')) {
-                flashcard.classList.add('flipped');
-                flowState.flipped = true;
-                updateVisualStates();
+            if (!flashcard.classList.contains('flipped') && !flashcard.classList.contains('flipping')) {
+                // Play flip sound
+                playFlipSound();
 
-                // Auto-flip back after 2 seconds, then highlight practice button
+                // Start flip animation
+                flashcard.classList.add('flipping');
+
+                // After front shrinks, show back
                 setTimeout(() => {
-                    flashcard.classList.remove('flipped');
-                    // Practice button is already pulsing from updateVisualStates
-                }, 2000);
+                    flashcard.classList.remove('flipping');
+                    flashcard.classList.add('flipped');
+                    flowState.flipped = true;
+                    updateVisualStates();
+
+                    // Auto-flip back after 2 seconds
+                    setTimeout(() => {
+                        playFlipSound();
+                        flashcard.classList.add('flipping-back');
+
+                        setTimeout(() => {
+                            flashcard.classList.remove('flipped', 'flipping-back');
+                        }, 150);
+                    }, 2000);
+                }, 150);
             }
         });
 
