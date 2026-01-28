@@ -2010,13 +2010,29 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px;
-    padding: 10px 15px;
     background: var(--card-bg);
     border-bottom: 1px solid #333;
     position: sticky;
     top: 0;
     z-index: 100;
+}
+
+.promo-banner-link {
+    display: block;
+    width: 100%;
+    max-width: 800px;
+    transition: var(--transition);
+}
+
+.promo-banner-link:hover {
+    opacity: 0.9;
+    transform: scale(1.01);
+}
+
+.promo-banner-img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 .promo-btn {
@@ -2038,16 +2054,6 @@ a:hover {
 
 .promo-btn.course-btn:hover {
     background: var(--primary-dark);
-    transform: translateY(-1px);
-}
-
-.promo-btn.chat-btn {
-    background: var(--secondary);
-    color: var(--background);
-}
-
-.promo-btn.chat-btn:hover {
-    filter: brightness(1.1);
     transform: translateY(-1px);
 }
 
@@ -2086,26 +2092,8 @@ body {
 
 /* Mobile adjustments for promo elements */
 @media (max-width: 600px) {
-    .promo-banner {
-        padding: 8px 10px;
-        gap: 8px;
-    }
-
-    .promo-banner .promo-btn {
-        padding: 6px 10px;
-        font-size: 0;
-    }
-
-    .promo-banner .promo-btn::before {
-        font-size: 1.2rem;
-    }
-
-    .promo-banner .course-btn::before {
-        content: '🎓';
-    }
-
-    .promo-banner .chat-btn::before {
-        content: '💬';
+    .promo-banner-link {
+        max-width: 100%;
     }
 
     .promo-footer {
@@ -2117,16 +2105,12 @@ body {
         text-align: center;
     }
 
-    .promo-footer-btns {
-        gap: 8px;
-    }
-
     .promo-footer .promo-btn {
-        padding: 8px 14px;
-        font-size: 0.85rem;
+        padding: 10px 20px;
+        font-size: 0.9rem;
     }
 
     body {
-        padding-bottom: 110px;
+        padding-bottom: 90px;
     }
 }
