@@ -596,7 +596,7 @@
             border-radius: var(--radius);
             padding: 24px 20px;
             text-align: center;
-            border: 2px solid var(--success);
+            border: 2px solid var(--primary);
             animation: fadeInUp 0.4s ease;
         }
 
@@ -616,47 +616,58 @@
         }
 
         .confirm-heading {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            color: var(--success);
-            margin-bottom: 20px;
-        }
-
-        .confirm-photo {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--primary);
+            color: var(--primary);
             margin-bottom: 16px;
         }
 
+        .confirm-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            margin-bottom: 12px;
+        }
+
         .confirm-message {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--text);
-            line-height: 1.6;
+            line-height: 1.5;
             margin-bottom: 20px;
-            font-style: italic;
         }
 
         .confirm-steps {
-            text-align: left;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
+            text-align: center;
+            margin-bottom: 16px;
         }
 
         .confirm-step {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 12px;
-            padding: 8px 0;
-            font-size: 0.95rem;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 600;
         }
 
-        .confirm-step-icon {
-            font-size: 1.2rem;
+        .confirm-step-number {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: #111;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
         .confirm-spam {
@@ -668,7 +679,7 @@
         .confirm-btn {
             width: 100%;
             padding: 16px 24px;
-            background: var(--success);
+            background: var(--accent-yellow);
             color: #111111;
             border: none;
             border-radius: var(--radius);
@@ -681,6 +692,7 @@
 
         .confirm-btn:active {
             transform: scale(0.98);
+            background: #e6e81f;
         }
 
         /* ==========================================
@@ -1017,21 +1029,21 @@
 
             <!-- Confirmation Card (shown after signup) -->
             <div class="confirm-card" id="confirm-card">
-                <h3 class="confirm-heading">Almost there mate! 🎉</h3>
+                <h3 class="confirm-heading">One more step!</h3>
                 <img src="images/jimbo-confirm.jpg" alt="Jimbo" class="confirm-photo">
-                <p class="confirm-message">"G'day! I'm Jimbo - check your inbox for my email and hit confirm. Can't find it? Have a squiz in your spam folder - it sneaks in there sometimes!"</p>
+                <p class="confirm-message">I just sent you an email. Please open it and click confirm to get your free access.</p>
                 <div class="confirm-steps">
                     <div class="confirm-step">
-                        <span class="confirm-step-icon">📧</span>
-                        <span>Check your inbox for an email from Your Aussie Uncle</span>
+                        <span class="confirm-step-number">1</span>
+                        <span>Open your email</span>
                     </div>
                     <div class="confirm-step">
-                        <span class="confirm-step-icon">👆</span>
-                        <span>Click the confirm button inside</span>
+                        <span class="confirm-step-number">2</span>
+                        <span>Click the confirm button</span>
                     </div>
                 </div>
-                <p class="confirm-spam">Can't find it? Check your spam/junk folder!</p>
-                <button class="confirm-btn" id="confirm-btn">All good → Let me in! 🇦🇺</button>
+                <p class="confirm-spam">Not there? Check your spam folder.</p>
+                <button class="confirm-btn" id="confirm-btn">I've confirmed → Open the app</button>
             </div>
         </section>
 
