@@ -2019,7 +2019,7 @@ a:hover {
 .course-cta-text {
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--heading-color);
+    color: var(--primary);
     margin-bottom: 20px;
 }
 
