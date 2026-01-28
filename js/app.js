@@ -4,8 +4,19 @@ const App = {
 
     init() {
         this.setupModeSelector();
+        this.setupBadgesButton();
         this.setupSoundToggle();
         this.initializeModules();
+    },
+
+    setupBadgesButton() {
+        const badgesBtn = document.getElementById('badges-badge');
+        if (badgesBtn) {
+            badgesBtn.addEventListener('click', () => {
+                this.switchMode('achievements');
+                SoundEffects.play('click');
+            });
+        }
     },
 
     setupModeSelector() {
