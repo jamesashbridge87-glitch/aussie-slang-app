@@ -160,7 +160,7 @@ const VoicePractice = {
 
     init() {
         if (!this.isSupported()) {
-            console.log('Speech recognition not supported in this browser');
+            // Speech recognition not supported - fail silently
             return;
         }
 
