@@ -1184,12 +1184,12 @@
                 // Flip the card
                 flashcard.classList.add('flipped');
                 flowState.flipped = true;
-                updateVisualStates();
 
-                // Auto-flip back after 2 seconds
+                // Auto-flip back after 2 seconds, then activate practice button
                 setTimeout(() => {
                     playFlipSound();
                     flashcard.classList.remove('flipped');
+                    updateVisualStates();
                 }, 2000);
             }
         });
