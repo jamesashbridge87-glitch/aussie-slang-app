@@ -147,45 +147,51 @@
             position: relative;
         }
 
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 16px 0;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            min-height: 220px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            min-height: 220px;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 16px;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
         .flashcard-front {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            transform-origin: center;
-            transition: transform 0.15s ease-out, opacity 0.15s ease-out;
         }
 
         .flashcard-back {
             background: var(--card-bg);
             border: 3px solid var(--secondary);
             color: var(--text);
-            display: none;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            transform-origin: center;
-            transition: transform 0.15s ease-out, opacity 0.15s ease-out;
-        }
-
-        /* Mobile: Flip animation */
-        .flashcard.flipping .flashcard-front {
-            transform: scaleX(0);
-        }
-
-        .flashcard.flipped .flashcard-front {
-            display: none;
-        }
-
-        .flashcard.flipped .flashcard-back {
-            display: flex;
-            animation: flipIn 0.2s ease-out;
-        }
-
-        .flashcard.flipping-back .flashcard-back {
-            transform: scaleX(0);
-        }
-
-        @keyframes flipIn {
-            0% { transform: scaleX(0); }
-            100% { transform: scaleX(1); }
+            transform: rotateY(180deg);
         }
 
         .difficulty-badge {
@@ -700,34 +706,14 @@
 
             .flashcard-inner {
                 height: 100%;
-                transition: transform 0.6s;
-                transform-style: preserve-3d;
-            }
-
-            .flashcard.flipped .flashcard-inner {
-                transform: rotateY(180deg);
+                min-height: auto;
             }
 
             .flashcard-front,
             .flashcard-back {
-                position: absolute;
                 height: 100%;
                 min-height: auto;
-                backface-visibility: hidden;
                 padding: 30px;
-            }
-
-            .flashcard-back {
-                transform: rotateY(180deg);
-                display: flex;
-            }
-
-            .flashcard.flipped .flashcard-front {
-                display: flex;
-            }
-
-            .flashcard.flipped .flashcard-back {
-                display: flex;
             }
 
             .term {
@@ -962,30 +948,14 @@
         const audioExample = new Audio('audio/shes-right-example.mp3');
         let audioPlaying = false;
 
-        // Create flip sound using Web Audio API
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // Flip sound - base64 encoded short click/whoosh
+        const flipSoundData = 'data:audio/wav;base64,UklGRl4FAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YToFAACAgICAgICAgICAgICAgICAgICAgICBgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/v7+/v79/fz8+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV1NPT0tHQz87NzMvKycjHxsXEw8LBwL++vby7urm4t7a1tLOysbCvrq2sq6qpqKempaSjoqGgn56dnJuamZiXlpWUk5KRkI+OjYyLiomIh4aFhIOCgYCAgICAgICAgICAgICAgICAgICAgA==';
+        const flipSound = new Audio(flipSoundData);
+        flipSound.volume = 0.5;
 
         function playFlipSound() {
-            // Resume audio context if suspended (required by browsers)
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-
-            // Create a short "whoosh" flip sound
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-
-            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
-
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.1);
+            flipSound.currentTime = 0;
+            flipSound.play().catch(() => {});
         }
 
         // Initialize guided flow
@@ -1028,31 +998,21 @@
         flashcard.addEventListener('click', (e) => {
             if (e.target.closest('.speak-btn')) return;
 
-            // Only allow flip if not already flipped (one-way on landing page)
-            if (!flashcard.classList.contains('flipped') && !flashcard.classList.contains('flipping')) {
+            // Only allow flip if not already flipped
+            if (!flashcard.classList.contains('flipped')) {
                 // Play flip sound
                 playFlipSound();
 
-                // Start flip animation
-                flashcard.classList.add('flipping');
+                // Flip the card
+                flashcard.classList.add('flipped');
+                flowState.flipped = true;
+                updateVisualStates();
 
-                // After front shrinks, show back
+                // Auto-flip back after 2 seconds
                 setTimeout(() => {
-                    flashcard.classList.remove('flipping');
-                    flashcard.classList.add('flipped');
-                    flowState.flipped = true;
-                    updateVisualStates();
-
-                    // Auto-flip back after 2 seconds
-                    setTimeout(() => {
-                        playFlipSound();
-                        flashcard.classList.add('flipping-back');
-
-                        setTimeout(() => {
-                            flashcard.classList.remove('flipped', 'flipping-back');
-                        }, 150);
-                    }, 2000);
-                }, 150);
+                    playFlipSound();
+                    flashcard.classList.remove('flipped');
+                }, 2000);
             }
         });
 
