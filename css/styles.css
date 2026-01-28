@@ -2002,3 +2002,131 @@ a:hover {
     font-size: 1.2rem;
     color: var(--text-light);
 }
+
+/* ===== PROMO BANNER & FOOTER ===== */
+
+/* Top Promo Banner */
+.promo-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 15px;
+    background: var(--card-bg);
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.promo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.promo-btn.course-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.promo-btn.course-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.promo-btn.chat-btn {
+    background: var(--secondary);
+    color: var(--background);
+}
+
+.promo-btn.chat-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* Sticky Promo Footer */
+.promo-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: var(--card-bg);
+    border-top: 1px solid #333;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.promo-footer-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.promo-footer-btns {
+    display: flex;
+    gap: 12px;
+}
+
+/* Add padding to body to prevent footer overlap */
+body {
+    padding-bottom: 100px;
+}
+
+/* Mobile adjustments for promo elements */
+@media (max-width: 600px) {
+    .promo-banner {
+        padding: 8px 10px;
+        gap: 8px;
+    }
+
+    .promo-banner .promo-btn {
+        padding: 6px 10px;
+        font-size: 0;
+    }
+
+    .promo-banner .promo-btn::before {
+        font-size: 1.2rem;
+    }
+
+    .promo-banner .course-btn::before {
+        content: '🎓';
+    }
+
+    .promo-banner .chat-btn::before {
+        content: '💬';
+    }
+
+    .promo-footer {
+        padding: 10px 15px;
+    }
+
+    .promo-footer-text {
+        font-size: 0.85rem;
+        text-align: center;
+    }
+
+    .promo-footer-btns {
+        gap: 8px;
+    }
+
+    .promo-footer .promo-btn {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+
+    body {
+        padding-bottom: 110px;
+    }
+}
