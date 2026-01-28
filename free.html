@@ -276,16 +276,40 @@
             transform: scale(0.95);
         }
 
-        .tap-finger {
+        .speak-bubble {
             position: absolute;
-            bottom: 8px;
-            right: 60px;
-            width: 56px;
-            height: 56px;
+            bottom: 6px;
+            right: 68px;
+            background: var(--text);
+            color: var(--background);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 16px;
+            white-space: nowrap;
             pointer-events: none;
+            animation: bubblePulse 2s ease-in-out infinite;
         }
 
-        .tap-finger.hidden {
+        .speak-bubble::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 7px solid var(--text);
+        }
+
+        @keyframes bubblePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .speak-bubble.hidden {
             display: none;
         }
 
@@ -953,7 +977,7 @@
                             <span class="example">"Don't stress about the exam, she'll be right"</span>
                             <span class="tap-hint">Tap to flip</span>
                             <button class="speak-btn" id="speak-btn" title="Hear pronunciation">🔈</button>
-                            <img src="images/tap-finger.gif" alt="" class="tap-finger" id="tap-finger">
+                            <span class="speak-bubble" id="speak-bubble">Hear how Aussies say it</span>
                             <!-- Flip Overlay - appears after listening -->
                             <div class="flip-overlay" id="flip-overlay">
                                 <span class="flip-overlay-icon">👆</span>
@@ -1201,7 +1225,7 @@
 
             audioPlaying = true;
             speakBtn.classList.remove('pulse');
-            document.getElementById('tap-finger').classList.add('hidden');
+            document.getElementById('speak-bubble').classList.add('hidden');
             audioExample.currentTime = 0;
 
             audioExample.play().catch(() => {
