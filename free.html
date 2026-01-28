@@ -588,6 +588,102 @@
         }
 
         /* ==========================================
+           CONFIRMATION CARD
+           ========================================== */
+        .confirm-card {
+            display: none;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            text-align: center;
+            border: 2px solid var(--success);
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .confirm-card.show {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .confirm-heading {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+
+        .confirm-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .confirm-message {
+            font-size: 1rem;
+            color: var(--text);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .confirm-steps {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .confirm-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .confirm-step-icon {
+            font-size: 1.2rem;
+        }
+
+        .confirm-spam {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: var(--success);
+            color: #111111;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .confirm-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ==========================================
            FOOTER
            ========================================== */
         .footer {
@@ -917,7 +1013,26 @@
                 <button type="submit" class="submit-btn">Get Free Access 🇦🇺</button>
             </form>
 
-            <p class="trust-text">Free forever. No credit card needed.</p>
+            <p class="trust-text" id="trust-text">Free forever. No credit card needed.</p>
+
+            <!-- Confirmation Card (shown after signup) -->
+            <div class="confirm-card" id="confirm-card">
+                <h3 class="confirm-heading">Almost there mate! 🎉</h3>
+                <img src="images/jimbo-confirm.jpg" alt="Jimbo" class="confirm-photo">
+                <p class="confirm-message">"G'day! I'm Jimbo - check your inbox for my email and hit confirm. Can't find it? Have a squiz in your spam folder - it sneaks in there sometimes!"</p>
+                <div class="confirm-steps">
+                    <div class="confirm-step">
+                        <span class="confirm-step-icon">📧</span>
+                        <span>Check your inbox for an email from Your Aussie Uncle</span>
+                    </div>
+                    <div class="confirm-step">
+                        <span class="confirm-step-icon">👆</span>
+                        <span>Click the confirm button inside</span>
+                    </div>
+                </div>
+                <p class="confirm-spam">Can't find it? Check your spam/junk folder!</p>
+                <button class="confirm-btn" id="confirm-btn">All good → Let me in! 🇦🇺</button>
+            </div>
         </section>
 
         <!-- Footer -->
@@ -1241,10 +1356,13 @@
                 });
 
                 if (response.ok) {
-                    submitBtn.textContent = 'Success! Redirecting...';
-                    setTimeout(() => {
-                        window.location.href = 'https://slang.youraussieuncle.com.au/';
-                    }, 1000);
+                    // Hide form, show confirmation card
+                    emailForm.style.display = 'none';
+                    document.getElementById('trust-text').style.display = 'none';
+                    document.getElementById('confirm-card').classList.add('show');
+
+                    // Scroll to confirmation card
+                    document.getElementById('confirm-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } else {
                     throw new Error('Subscription failed');
                 }
@@ -1253,6 +1371,11 @@
                 submitBtn.disabled = false;
                 alert('Something went wrong. Please try again.');
             }
+        });
+
+        // Confirm button - redirect to app
+        document.getElementById('confirm-btn').addEventListener('click', () => {
+            window.location.href = 'https://slang.youraussieuncle.com.au/';
         });
 
         // Initialize on load
