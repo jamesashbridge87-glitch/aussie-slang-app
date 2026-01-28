@@ -657,62 +657,119 @@
             }
         }
 
-        /* Guided Hint */
+        /* Guided Hint - MORE VISIBLE */
         .guided-hint {
             text-align: center;
-            font-size: 1rem;
-            color: var(--secondary);
-            margin-top: 12px;
-            min-height: 24px;
-            transition: opacity 0.3s ease;
+            font-size: 1.1rem;
+            color: var(--accent-yellow);
+            font-weight: 600;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(251, 255, 34, 0.1);
+            border-radius: var(--radius);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .guided-hint:empty {
+            display: none;
         }
 
         @media (max-width: 600px) {
             .guided-hint {
-                font-size: 0.95rem;
+                font-size: 1rem;
+                padding: 8px 15px;
             }
         }
 
-        /* Gentle Pulse Animation */
-        @keyframes gentlePulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+        /* Progress step active state - more visible */
+        .progress-step.active {
+            color: var(--accent-yellow);
+            font-weight: 700;
         }
 
-        /* Speaker Button Pulse */
+        .progress-step.active .step-icon {
+            animation: bounceIcon 1s ease-in-out infinite;
+        }
+
+        @keyframes bounceIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Speaker Button Pulse - VERY VISIBLE */
         .speak-btn.pulse {
-            animation: speakerPulse 2s ease-in-out infinite;
+            animation: speakerPulse 1.2s ease-in-out infinite;
+            background: rgba(255, 255, 255, 0.4);
         }
 
         @keyframes speakerPulse {
             0%, 100% {
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(251, 255, 34, 0.7);
             }
             50% {
-                box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+                transform: scale(1.15);
+                box-shadow: 0 0 0 15px rgba(251, 255, 34, 0);
             }
         }
 
-        /* Card Glow */
+        /* Start Here Arrow */
+        .start-arrow {
+            position: absolute;
+            bottom: 60px;
+            right: 60px;
+            color: var(--accent-yellow);
+            font-size: 1.5rem;
+            animation: pointArrow 1s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pointArrow {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-10px); }
+        }
+
+        .start-arrow.hidden {
+            display: none;
+        }
+
+        /* Card Glow - STRONGER */
         .flashcard.glow .flashcard-inner {
-            box-shadow: 0 0 20px var(--secondary), 0 10px 25px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 30px var(--secondary), 0 0 60px rgba(17, 232, 246, 0.3), 0 10px 25px rgba(0, 0, 0, 0.4);
+            animation: cardGlow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes cardGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px var(--secondary), 0 0 40px rgba(17, 232, 246, 0.2), 0 10px 25px rgba(0, 0, 0, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 40px var(--secondary), 0 0 80px rgba(17, 232, 246, 0.4), 0 10px 25px rgba(0, 0, 0, 0.4);
+            }
         }
 
         /* Practice Button States */
         .practice-btn.dimmed {
-            opacity: 0.6;
+            opacity: 0.5;
+            filter: grayscale(50%);
         }
 
         .practice-btn.pulse:not(.recording) {
-            animation: practicePulse 2s ease-in-out infinite;
+            animation: practicePulse 1.2s ease-in-out infinite;
         }
 
         @keyframes practicePulse {
             0%, 100% {
-                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
             }
             50% {
-                box-shadow: 0 0 0 12px rgba(102, 126, 234, 0);
+                transform: scale(1.05);
+                box-shadow: 0 0 0 15px rgba(102, 126, 234, 0);
             }
         }
 
@@ -785,6 +842,7 @@
                             <span class="example">"Don't stress about the exam, she'll be right"</span>
                             <span class="tap-hint">Tap to flip</span>
                             <button class="speak-btn" id="speak-btn" title="Hear pronunciation">🔈</button>
+                            <span class="start-arrow" id="start-arrow">👈 Start here!</span>
                         </div>
                         <div class="flashcard-back">
                             <span class="meaning">Everything will be okay</span>
@@ -904,6 +962,7 @@
         // DOM Elements
         const flashcard = document.getElementById('demo-flashcard');
         const speakBtn = document.getElementById('speak-btn');
+        const startArrow = document.getElementById('start-arrow');
         const practiceBtn = document.getElementById('practice-btn');
         const soundWave = document.getElementById('sound-wave');
         const resultsSection = document.getElementById('results-section');
@@ -968,11 +1027,13 @@
 
         // Update visual states
         function updateVisualStates() {
-            // Speaker button pulse
+            // Speaker button pulse and arrow
             if (!flowState.listened) {
                 speakBtn.classList.add('pulse');
+                startArrow.classList.remove('hidden');
             } else {
                 speakBtn.classList.remove('pulse');
+                startArrow.classList.add('hidden');
             }
 
             // Card glow
