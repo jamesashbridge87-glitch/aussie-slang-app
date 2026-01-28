@@ -2003,85 +2003,78 @@ a:hover {
     color: var(--text-light);
 }
 
-/* ===== PROMO FOOTER BANNER ===== */
+/* ===== COURSE CTA SECTION ===== */
 
-/* Sticky Footer Banner */
-.promo-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+.course-cta-section {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    padding: 10px 15px;
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 30px;
     background: var(--card-bg);
-    border-top: 1px solid #333;
-    z-index: 100;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius);
 }
 
-.promo-banner-link {
+.course-cta-text {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--heading-color);
+    margin-bottom: 20px;
+}
+
+.course-cta-link {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-decoration: none;
-    max-width: 350px;
+    max-width: 450px;
     cursor: pointer;
     transition: var(--transition);
     border-radius: var(--radius);
     overflow: hidden;
 }
 
-.promo-banner-link:hover {
-    transform: translateY(-2px);
+.course-cta-link:hover {
+    transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(255, 101, 190, 0.3);
 }
 
-.promo-banner-link:hover .promo-banner-hint {
+.course-cta-link:hover .course-cta-hint {
     color: var(--primary);
 }
 
-.promo-banner-img {
+.course-cta-img {
     width: 100%;
-    max-height: 100px;
-    object-fit: contain;
+    height: auto;
     display: block;
     border-radius: var(--radius);
 }
 
-.promo-banner-hint {
-    margin-top: 6px;
-    font-size: 0.8rem;
+.course-cta-hint {
+    margin-top: 12px;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-light);
     transition: var(--transition);
 }
 
-/* Add padding to body to prevent footer overlap */
-body {
-    padding-bottom: 140px;
-}
-
-/* Mobile adjustments for promo footer */
+/* Mobile adjustments for course CTA */
 @media (max-width: 600px) {
-    .promo-footer {
-        padding: 8px 10px;
+    .course-cta-section {
+        padding: 20px 15px;
+        margin-top: 20px;
     }
 
-    .promo-banner-link {
-        max-width: 280px;
+    .course-cta-text {
+        font-size: 1.1rem;
     }
 
-    .promo-banner-img {
-        max-height: 80px;
+    .course-cta-link {
+        max-width: 100%;
     }
 
-    .promo-banner-hint {
-        font-size: 0.75rem;
-    }
-
-    body {
-        padding-bottom: 120px;
+    .course-cta-hint {
+        font-size: 0.85rem;
     }
 }
