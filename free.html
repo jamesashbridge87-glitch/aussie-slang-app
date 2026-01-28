@@ -677,6 +677,7 @@
         }
 
         .confirm-btn {
+            display: block;
             width: 100%;
             padding: 16px 24px;
             background: var(--accent-yellow);
@@ -686,8 +687,11 @@
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
+            text-align: center;
+            text-decoration: none;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            box-sizing: border-box;
         }
 
         .confirm-btn:active {
@@ -1043,7 +1047,7 @@
                     </div>
                 </div>
                 <p class="confirm-spam">Not there? Check your spam folder.</p>
-                <button class="confirm-btn" id="confirm-btn">I've confirmed → Open the app</button>
+                <a href="#" target="_blank" class="confirm-btn" id="open-email-btn">Open Gmail</a>
             </div>
         </section>
 
@@ -1373,6 +1377,9 @@
                     document.getElementById('trust-text').style.display = 'none';
                     document.getElementById('confirm-card').classList.add('show');
 
+                    // Set email button based on provider
+                    setEmailButton(email);
+
                     // Scroll to confirmation card
                     document.getElementById('confirm-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } else {
@@ -1385,10 +1392,38 @@
             }
         });
 
-        // Confirm button - redirect to app
-        document.getElementById('confirm-btn').addEventListener('click', () => {
-            window.location.href = 'https://slang.youraussieuncle.com.au/';
-        });
+        // Email provider detection and button setup
+        function setEmailButton(email) {
+            const emailBtn = document.getElementById('open-email-btn');
+            const domain = email.split('@')[1]?.toLowerCase() || '';
+
+            // Email provider mappings
+            const providers = {
+                'gmail.com': { name: 'Gmail', url: 'https://mail.google.com/' },
+                'googlemail.com': { name: 'Gmail', url: 'https://mail.google.com/' },
+                'outlook.com': { name: 'Outlook', url: 'https://outlook.live.com/' },
+                'hotmail.com': { name: 'Outlook', url: 'https://outlook.live.com/' },
+                'live.com': { name: 'Outlook', url: 'https://outlook.live.com/' },
+                'msn.com': { name: 'Outlook', url: 'https://outlook.live.com/' },
+                'yahoo.com': { name: 'Yahoo Mail', url: 'https://mail.yahoo.com/' },
+                'yahoo.co.uk': { name: 'Yahoo Mail', url: 'https://mail.yahoo.com/' },
+                'yahoo.com.au': { name: 'Yahoo Mail', url: 'https://mail.yahoo.com/' },
+                'icloud.com': { name: 'iCloud Mail', url: 'https://www.icloud.com/mail/' },
+                'me.com': { name: 'iCloud Mail', url: 'https://www.icloud.com/mail/' },
+                'mac.com': { name: 'iCloud Mail', url: 'https://www.icloud.com/mail/' }
+            };
+
+            const provider = providers[domain];
+
+            if (provider) {
+                emailBtn.textContent = `Open ${provider.name}`;
+                emailBtn.href = provider.url;
+            } else {
+                // Generic fallback for custom domains
+                emailBtn.textContent = 'Open your email';
+                emailBtn.href = `https://www.google.com/search?q=${encodeURIComponent(domain + ' webmail login')}`;
+            }
+        }
 
         // Initialize on load
         initGuidedFlow();
