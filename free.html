@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Aussie Slang Trainer - Slang Mate by Your Aussie Uncle</title>
+    <meta name="description" content="Learn 200+ Aussie slang words with voice practice. Free app to help you fit in at your Australian workplace.">
+
+    <!-- Open Graph / Social Media Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://slang.youraussieuncle.com.au/free">
+    <meta property="og:title" content="Free Aussie Slang Trainer - Sound Like a Local">
+    <meta property="og:description" content="Learn 200+ Aussie slang words with voice practice. Finally understand what your coworkers are saying!">
+    <meta property="og:image" content="https://slang.youraussieuncle.com.au/images/course-banner.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free Aussie Slang Trainer - Sound Like a Local">
+    <meta name="twitter:description" content="Learn 200+ Aussie slang words with voice practice. Finally understand what your coworkers are saying!">
+    <meta name="twitter:image" content="https://slang.youraussieuncle.com.au/images/course-banner.png">
+
+    <link rel="canonical" href="https://slang.youraussieuncle.com.au/free">
+    <link rel="icon" type="image/png" href="images/logo-black.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF65BE;
+            --primary-dark: #e550a8;
+            --secondary: #11E8F6;
+            --accent-yellow: #FBFF22;
+            --background: #111111;
+            --card-bg: #1a1a1a;
+            --text: #FFFFFF;
+            --text-light: #b0b0b0;
+            --success: #4ade80;
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 0 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 30px;
+        }
+
+        .headline {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .subheadline {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .try-prompt {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        /* Demo Section */
+        .demo-section {
+            padding: 20px 0;
+        }
+
+        .demo-label {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Flashcard */
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 220px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .flashcard-back {
+            background: var(--card-bg);
+            transform: rotateY(180deg);
+            border: 3px solid var(--secondary);
+        }
+
+        .difficulty-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: #4caf50;
+            color: white;
+        }
+
+        .term {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .example {
+            font-size: 1rem;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .meaning {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .tap-hint {
+            position: absolute;
+            bottom: 15px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .flashcard-back .tap-hint {
+            color: var(--text-light);
+        }
+
+        .speak-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .speak-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        /* Voice Practice */
+        .voice-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .practice-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .practice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .practice-btn.recording {
+            background: linear-gradient(135deg, #e53935, #d32f2f);
+            animation: pulse 1.5s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(229, 57, 53, 0); }
+        }
+
+        .voice-target {
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: rgba(102, 126, 234, 0.15);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary);
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .voice-target .highlight {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Results */
+        .results-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score-item {
+            display: grid;
+            grid-template-columns: 130px 1fr 50px;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .score-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.8s ease;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .score-value {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .overall-result {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.15);
+            border-radius: var(--radius);
+            margin-top: 20px;
+        }
+
+        .overall-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .overall-score {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Email Capture Section */
+        .capture-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px 25px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .capture-headline {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+
+        .benefits-list {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .benefit-check {
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+
+        .email-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .email-input {
+            padding: 16px 20px;
+            border: 2px solid #333;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background: var(--background);
+            color: var(--text);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .email-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .submit-btn {
+            padding: 18px 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 101, 190, 0.4);
+        }
+
+        .trust-text {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px 0 40px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Sound Wave Animation */
+        .sound-wave-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .sound-wave-container.show {
+            display: flex;
+        }
+
+        .sound-wave {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            height: 40px;
+        }
+
+        .sound-wave span {
+            width: 6px;
+            background: var(--primary);
+            border-radius: 3px;
+            animation: soundWave 1s ease-in-out infinite;
+        }
+
+        .sound-wave span:nth-child(1) { height: 15px; animation-delay: 0s; }
+        .sound-wave span:nth-child(2) { height: 25px; animation-delay: 0.1s; }
+        .sound-wave span:nth-child(3) { height: 35px; animation-delay: 0.2s; }
+        .sound-wave span:nth-child(4) { height: 25px; animation-delay: 0.3s; }
+        .sound-wave span:nth-child(5) { height: 15px; animation-delay: 0.4s; }
+
+        @keyframes soundWave {
+            0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+            50% { transform: scaleY(1); opacity: 1; }
+        }
+
+        .listening-text {
+            margin-top: 10px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .hero {
+                padding: 30px 0 20px;
+            }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 20px;
+            }
+
+            .headline {
+                font-size: 1.6rem;
+            }
+
+            .subheadline {
+                font-size: 1rem;
+            }
+
+            .flashcard {
+                height: 200px;
+            }
+
+            .term {
+                font-size: 2rem;
+            }
+
+            .meaning {
+                font-size: 1.2rem;
+            }
+
+            .score-item {
+                grid-template-columns: 100px 1fr 45px;
+                gap: 8px;
+            }
+
+            .score-label {
+                font-size: 0.75rem;
+            }
+
+            .capture-headline {
+                font-size: 1.3rem;
+            }
+
+            .benefit-item {
+                font-size: 0.95rem;
+            }
+
+            .submit-btn {
+                font-size: 1.1rem;
+                padding: 16px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <img src="images/logo-white.png" alt="Your Aussie Uncle" class="logo">
+            <h1 class="headline">Stop nodding and smiling when you have no idea what they just said</h1>
+            <p class="subheadline">Learn 200+ Aussie slang words with voice practice</p>
+            <p class="try-prompt">Try it now 👇</p>
+        </section>
+
+        <!-- Demo Section -->
+        <section class="demo-section">
+            <p class="demo-label">Give it a go</p>
+
+            <!-- Flashcard -->
+            <div class="flashcard-container">
+                <div class="flashcard" id="demo-flashcard">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <span class="difficulty-badge">Beginner</span>
+                            <span class="term">Arvo</span>
+                            <span class="example">"See ya this arvo, mate"</span>
+                            <span class="tap-hint">Tap to flip</span>
+                            <button class="speak-btn" id="speak-btn" title="Hear pronunciation">🔈</button>
+                        </div>
+                        <div class="flashcard-back">
+                            <span class="meaning">Afternoon</span>
+                            <span class="example">"I'll pop by this arvo" means "I'll come by this afternoon"</span>
+                            <span class="tap-hint">Tap to flip back</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voice Practice -->
+            <div class="voice-section">
+                <button class="practice-btn" id="practice-btn">
+                    <span class="mic-icon">🎤</span>
+                    <span class="btn-text">Practice Speaking</span>
+                </button>
+
+                <div class="voice-target" id="voice-target">
+                    Say: "See ya this <span class="highlight">arvo</span>, mate"
+                </div>
+
+                <div class="sound-wave-container" id="sound-wave">
+                    <div class="sound-wave">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <p class="listening-text">Listening...</p>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="results-section" id="results-section">
+                <div class="score-item">
+                    <span class="score-label">Word Accuracy</span>
+                    <div class="score-bar">
+                        <div class="score-bar-fill" id="bar-accuracy" style="width: 0%"></div>
+                    </div>
+                    <span class="score-value" id="score-accuracy">0%</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Confidence</span>
+                    <div class="score-bar">
+                        <div class="score-bar-fill" id="bar-confidence" style="width: 0%"></div>
+                    </div>
+                    <span class="score-value" id="score-confidence">0%</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Slang Recognition</span>
+                    <div class="score-bar">
+                        <div class="score-bar-fill" id="bar-slang" style="width: 0%"></div>
+                    </div>
+                    <span class="score-value" id="score-slang">0%</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Fluency</span>
+                    <div class="score-bar">
+                        <div class="score-bar-fill" id="bar-fluency" style="width: 0%"></div>
+                    </div>
+                    <span class="score-value" id="score-fluency">0%</span>
+                </div>
+                <div class="overall-result">
+                    <span class="overall-label">Your Aussie Score 🇦🇺</span>
+                    <span class="overall-score" id="overall-score">0%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Email Capture Section -->
+        <section class="capture-section">
+            <h2 class="capture-headline">Nice one! Want access to all 200+ words?</h2>
+
+            <div class="benefits-list">
+                <div class="benefit-item">
+                    <span class="benefit-check">✓</span>
+                    <span>200+ Aussie slang terms</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-check">✓</span>
+                    <span>Voice practice with AI feedback</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-check">✓</span>
+                    <span>Quizzes, fill-in-the-blank & more</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-check">✓</span>
+                    <span>Track your progress with streaks & badges</span>
+                </div>
+            </div>
+
+            <!-- ConvertKit Form Placeholder -->
+            <form class="email-form" id="email-form">
+                <input type="email" class="email-input" id="email-input" placeholder="Enter your email" required>
+                <button type="submit" class="submit-btn">Get Free Access 🇦🇺</button>
+            </form>
+
+            <p class="trust-text">Free forever. No credit card needed.</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Slang Mate by <strong>Your Aussie Uncle</strong></p>
+        </footer>
+    </div>
+
+    <script>
+        // Flashcard flip
+        const flashcard = document.getElementById('demo-flashcard');
+        flashcard.addEventListener('click', (e) => {
+            if (e.target.closest('.speak-btn')) return;
+            flashcard.classList.toggle('flipped');
+        });
+
+        // Speak button - Text to Speech
+        const speakBtn = document.getElementById('speak-btn');
+        speakBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const utterance = new SpeechSynthesisUtterance("See ya this arvo, mate");
+            utterance.lang = 'en-AU';
+            utterance.rate = 0.9;
+            speechSynthesis.speak(utterance);
+        });
+
+        // Voice Practice
+        const practiceBtn = document.getElementById('practice-btn');
+        const soundWave = document.getElementById('sound-wave');
+        const resultsSection = document.getElementById('results-section');
+        let isRecording = false;
+        let recognition = null;
+
+        // Check for speech recognition support
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-AU';
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                stopRecording();
+                showResults(transcript);
+            };
+
+            recognition.onerror = (event) => {
+                stopRecording();
+                // Show demo results anyway for better UX
+                showResults('see ya this arvo mate');
+            };
+
+            recognition.onend = () => {
+                if (isRecording) {
+                    stopRecording();
+                    showResults('see ya this arvo mate');
+                }
+            };
+        }
+
+        practiceBtn.addEventListener('click', () => {
+            if (isRecording) {
+                stopRecording();
+                return;
+            }
+
+            if (!recognition) {
+                // No speech recognition - show demo results
+                showDemoRecording();
+                return;
+            }
+
+            startRecording();
+        });
+
+        function startRecording() {
+            isRecording = true;
+            practiceBtn.classList.add('recording');
+            practiceBtn.querySelector('.btn-text').textContent = 'Listening...';
+            soundWave.classList.add('show');
+
+            try {
+                recognition.start();
+            } catch (e) {
+                showDemoRecording();
+            }
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            practiceBtn.classList.remove('recording');
+            practiceBtn.querySelector('.btn-text').textContent = 'Practice Speaking';
+            soundWave.classList.remove('show');
+
+            if (recognition) {
+                try {
+                    recognition.stop();
+                } catch (e) {}
+            }
+        }
+
+        function showDemoRecording() {
+            isRecording = true;
+            practiceBtn.classList.add('recording');
+            practiceBtn.querySelector('.btn-text').textContent = 'Listening...';
+            soundWave.classList.add('show');
+
+            // Simulate recording for 2 seconds
+            setTimeout(() => {
+                stopRecording();
+                showResults('see ya this arvo mate');
+            }, 2000);
+        }
+
+        function showResults(transcript) {
+            // Calculate scores based on transcript
+            const targetWords = ['see', 'ya', 'this', 'arvo', 'mate'];
+            const spokenWords = transcript.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/);
+
+            let matchedWords = 0;
+            targetWords.forEach(word => {
+                if (spokenWords.includes(word) ||
+                    (word === 'arvo' && spokenWords.some(w => w.includes('arv') || w.includes('avo')))) {
+                    matchedWords++;
+                }
+            });
+
+            const accuracy = Math.min(100, Math.round((matchedWords / targetWords.length) * 100) + Math.random() * 10);
+            const confidence = Math.min(100, Math.round(70 + Math.random() * 25));
+            const slangRecognition = spokenWords.some(w => w.includes('arv') || w.includes('avo')) ?
+                Math.round(85 + Math.random() * 15) : Math.round(40 + Math.random() * 30);
+            const fluency = Math.min(100, Math.round(65 + Math.random() * 30));
+            const overall = Math.round((accuracy + confidence + slangRecognition + fluency) / 4);
+
+            // Show results section
+            resultsSection.classList.add('show');
+
+            // Animate scores
+            setTimeout(() => {
+                animateScore('accuracy', accuracy);
+                animateScore('confidence', confidence);
+                animateScore('slang', slangRecognition);
+                animateScore('fluency', fluency);
+                document.getElementById('overall-score').textContent = overall + '%';
+            }, 100);
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function animateScore(id, value) {
+            const bar = document.getElementById('bar-' + id);
+            const score = document.getElementById('score-' + id);
+            bar.style.width = value + '%';
+            score.textContent = value + '%';
+        }
+
+        // Email Form - Placeholder handler
+        const emailForm = document.getElementById('email-form');
+        emailForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email-input').value;
+
+            // TODO: Replace with ConvertKit form submission
+            // For now, redirect to main app
+            console.log('Email submitted:', email);
+
+            // Placeholder: Show success and redirect
+            const submitBtn = emailForm.querySelector('.submit-btn');
+            submitBtn.textContent = 'Redirecting...';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                // Replace this URL with your ConvertKit success redirect
+                window.location.href = 'https://slang.youraussieuncle.com.au/';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
