@@ -685,14 +685,20 @@
             flashcard.classList.toggle('flipped');
         });
 
-        // Speak button - Text to Speech
+        // Speak button - Play pre-recorded audio
         const speakBtn = document.getElementById('speak-btn');
+        const audioExample = new Audio('audio/arvo-example.mp3');
+
         speakBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const utterance = new SpeechSynthesisUtterance("See ya this arvo, mate");
-            utterance.lang = 'en-AU';
-            utterance.rate = 0.9;
-            speechSynthesis.speak(utterance);
+            audioExample.currentTime = 0;
+            audioExample.play().catch(() => {
+                // Fallback to TTS if audio fails
+                const utterance = new SpeechSynthesisUtterance("See ya this arvo, mate");
+                utterance.lang = 'en-AU';
+                utterance.rate = 0.9;
+                speechSynthesis.speak(utterance);
+            });
         });
 
         // Voice Practice
