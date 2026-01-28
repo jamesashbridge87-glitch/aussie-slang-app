@@ -599,14 +599,14 @@
                     <div class="flashcard-inner">
                         <div class="flashcard-front">
                             <span class="difficulty-badge">Beginner</span>
-                            <span class="term">Arvo</span>
-                            <span class="example">"See ya this arvo, mate"</span>
+                            <span class="term">She'll be right</span>
+                            <span class="example">"Don't stress about the exam, she'll be right"</span>
                             <span class="tap-hint">Tap to flip</span>
                             <button class="speak-btn" id="speak-btn" title="Hear pronunciation">🔈</button>
                         </div>
                         <div class="flashcard-back">
-                            <span class="meaning">Afternoon</span>
-                            <span class="example">"I'll pop by this arvo" means "I'll come by this afternoon"</span>
+                            <span class="meaning">Everything will be okay</span>
+                            <span class="example">Used to reassure someone that things will work out fine</span>
                             <span class="tap-hint">Tap to flip back</span>
                         </div>
                     </div>
@@ -621,7 +621,7 @@
                 </button>
 
                 <div class="voice-target" id="voice-target">
-                    Say: "See ya this <span class="highlight">arvo</span>, mate"
+                    Say: "Don't stress, <span class="highlight">she'll be right</span>"
                 </div>
 
                 <div class="sound-wave-container" id="sound-wave">
@@ -717,14 +717,14 @@
 
         // Speak button - Play pre-recorded audio
         const speakBtn = document.getElementById('speak-btn');
-        const audioExample = new Audio('audio/arvo-example.mp3');
+        const audioExample = new Audio('audio/shes-right-example.mp3');
 
         speakBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             audioExample.currentTime = 0;
             audioExample.play().catch(() => {
                 // Fallback to TTS if audio fails
-                const utterance = new SpeechSynthesisUtterance("See ya this arvo, mate");
+                const utterance = new SpeechSynthesisUtterance("Don't stress about the exam, she'll be right");
                 utterance.lang = 'en-AU';
                 utterance.rate = 0.9;
                 speechSynthesis.speak(utterance);
@@ -756,13 +756,13 @@
             recognition.onerror = (event) => {
                 stopRecording();
                 // Show demo results anyway for better UX
-                showResults('see ya this arvo mate');
+                showResults("don't stress she'll be right");
             };
 
             recognition.onend = () => {
                 if (isRecording) {
                     stopRecording();
-                    showResults('see ya this arvo mate');
+                    showResults("don't stress she'll be right");
                 }
             };
         }
@@ -817,26 +817,30 @@
             // Simulate recording for 2 seconds
             setTimeout(() => {
                 stopRecording();
-                showResults('see ya this arvo mate');
+                showResults("don't stress she'll be right");
             }, 2000);
         }
 
         function showResults(transcript) {
             // Calculate scores based on transcript
-            const targetWords = ['see', 'ya', 'this', 'arvo', 'mate'];
+            const targetWords = ['dont', 'stress', 'shell', 'be', 'right'];
             const spokenWords = transcript.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/);
 
             let matchedWords = 0;
             targetWords.forEach(word => {
                 if (spokenWords.includes(word) ||
-                    (word === 'arvo' && spokenWords.some(w => w.includes('arv') || w.includes('avo')))) {
+                    (word === 'shell' && spokenWords.some(w => w.includes('she') || w.includes('shell')))) {
                     matchedWords++;
                 }
             });
 
+            // Check for the key phrase "she'll be right"
+            const hasKeyPhrase = spokenWords.some(w => w.includes('she') || w.includes('shell')) &&
+                                 spokenWords.includes('be') && spokenWords.includes('right');
+
             const accuracy = Math.min(100, Math.round((matchedWords / targetWords.length) * 100) + Math.random() * 10);
             const confidence = Math.min(100, Math.round(70 + Math.random() * 25));
-            const slangRecognition = spokenWords.some(w => w.includes('arv') || w.includes('avo')) ?
+            const slangRecognition = hasKeyPhrase ?
                 Math.round(85 + Math.random() * 15) : Math.round(40 + Math.random() * 30);
             const fluency = Math.min(100, Math.round(65 + Math.random() * 30));
             const overall = Math.round((accuracy + confidence + slangRecognition + fluency) / 4);
