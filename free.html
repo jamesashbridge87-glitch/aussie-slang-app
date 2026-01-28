@@ -948,10 +948,9 @@
         const audioExample = new Audio('audio/shes-right-example.mp3');
         let audioPlaying = false;
 
-        // Flip sound - base64 encoded short click/whoosh
-        const flipSoundData = 'data:audio/wav;base64,UklGRl4FAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YToFAACAgICAgICAgICAgICAgICAgICAgICBgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/v7+/v79/fz8+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV1NPT0tHQz87NzMvKycjHxsXEw8LBwL++vby7urm4t7a1tLOysbCvrq2sq6qpqKempaSjoqGgn56dnJuamZiXlpWUk5KRkI+OjYyLiomIh4aFhIOCgYCAgICAgICAgICAgICAgICAgICAgA==';
-        const flipSound = new Audio(flipSoundData);
-        flipSound.volume = 0.5;
+        // Flip sound
+        const flipSound = new Audio('audio/flip-sound.mp3');
+        flipSound.volume = 0.6;
 
         function playFlipSound() {
             flipSound.currentTime = 0;
