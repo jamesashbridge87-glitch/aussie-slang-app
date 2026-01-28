@@ -1177,7 +1177,7 @@
                 document.getElementById('overall-score').textContent = overall + '%';
             }, 100);
 
-            // Auto-scroll to CTA after showing results
+            // Let user see their results for 2 seconds, then auto-scroll to CTA
             setTimeout(() => {
                 captureSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -1193,7 +1193,7 @@
                         }, 600);
                     }, 500);
                 }
-            }, 500);
+            }, 2000);
         }
 
         function animateScore(id, value) {
