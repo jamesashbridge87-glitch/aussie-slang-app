@@ -2003,114 +2003,70 @@ a:hover {
     color: var(--text-light);
 }
 
-/* ===== PROMO BANNER & FOOTER ===== */
+/* ===== PROMO BANNER ===== */
 
 /* Top Promo Banner */
 .promo-banner {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 10px 15px;
     background: var(--card-bg);
     border-bottom: 1px solid #333;
-    position: sticky;
-    top: 0;
-    z-index: 100;
 }
 
 .promo-banner-link {
-    display: block;
-    width: 100%;
-    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    max-width: 400px;
+    cursor: pointer;
     transition: var(--transition);
+    border-radius: var(--radius);
+    overflow: hidden;
 }
 
 .promo-banner-link:hover {
-    opacity: 0.9;
-    transform: scale(1.01);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 101, 190, 0.3);
+}
+
+.promo-banner-link:hover .promo-banner-hint {
+    color: var(--primary);
 }
 
 .promo-banner-img {
     width: 100%;
-    height: auto;
+    max-height: 150px;
+    object-fit: contain;
     display: block;
+    border-radius: var(--radius);
 }
 
-.promo-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.9rem;
+.promo-banner-hint {
+    margin-top: 8px;
+    font-size: 0.85rem;
     font-weight: 600;
-    text-decoration: none;
+    color: var(--text-light);
     transition: var(--transition);
 }
 
-.promo-btn.course-btn {
-    background: var(--primary);
-    color: white;
-}
-
-.promo-btn.course-btn:hover {
-    background: var(--primary-dark);
-    transform: translateY(-1px);
-}
-
-/* Sticky Promo Footer */
-.promo-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    background: var(--card-bg);
-    border-top: 1px solid #333;
-    z-index: 100;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-}
-
-.promo-footer-text {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text);
-}
-
-.promo-footer-btns {
-    display: flex;
-    gap: 12px;
-}
-
-/* Add padding to body to prevent footer overlap */
-body {
-    padding-bottom: 100px;
-}
-
-/* Mobile adjustments for promo elements */
+/* Mobile adjustments for promo banner */
 @media (max-width: 600px) {
+    .promo-banner {
+        padding: 8px 10px;
+    }
+
     .promo-banner-link {
-        max-width: 100%;
+        max-width: 300px;
     }
 
-    .promo-footer {
-        padding: 10px 15px;
+    .promo-banner-img {
+        max-height: 120px;
     }
 
-    .promo-footer-text {
-        font-size: 0.85rem;
-        text-align: center;
-    }
-
-    .promo-footer .promo-btn {
-        padding: 10px 20px;
-        font-size: 0.9rem;
-    }
-
-    body {
-        padding-bottom: 90px;
+    .promo-banner-hint {
+        font-size: 0.8rem;
     }
 }
